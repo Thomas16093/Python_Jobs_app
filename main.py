@@ -3,6 +3,9 @@ import tkinter.filedialog
 
 class WindowApp :
     filename = ""
+    selected_job = ""
+    job_index = 0
+    default_list = ["Jobs 1", "Jobs 2", "Jobs 3", "Jobs 4", "Jobs 5", "Jobs 6", "Jobs 7", "Jobs 8", "Jobs 9", "Jobs 10", "Jobs 11"]
 
     def __init__(self, main):
         self.m = main
@@ -21,6 +24,20 @@ class WindowApp :
         fileSelector.add_command(label="Exit", command=self.m.destroy)
 
         window_exit = tkinter.Button(self.m, text="Exit", command=self.m.destroy)
+        window_exit.pack()
+
+        scrollbar = tkinter.Scrollbar(self.m)
+        scrollbar.pack(side="right", fill="y")
+        list_jobs = tkinter.Listbox(self.m, yscrollcommand=scrollbar.set)
+
+        for line in range(len(self.default_list)) :
+            job = self.default_list[line]
+            list_jobs.insert(line, str(job))
+
+        list_jobs.bind(sequence='<<ListboxSelect>>', func=self.on_select)
+        list_jobs.pack(side="left", fill="both", expand=True)
+        scrollbar.config(command=list_jobs.yview)
+
     def create_file(self) :
         name = tkinter.StringVar()
 
@@ -53,6 +70,16 @@ class WindowApp :
     def save_file(self) :
         # to change with the dump of the data in the csv
         print(str(self.filename))
+
+    def on_select(self, event) :
+        selection = event.widget.curselection()
+        if selection:
+            index = selection[0]
+            data = event.widget.get(index)
+            self.selected_job = data
+            self.job_index = index
+        else:
+            pass
 
     def get_curr_screen_geometry(self):
         root = tkinter.Tk()
