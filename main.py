@@ -24,9 +24,11 @@ class WindowApp :
         fileSelector.add_separator()
         fileSelector.add_command(label="Exit", command=self.m.destroy)
 
+        # create a frame to host the button of my main window
         button_frame = tkinter.Frame(self.m, borderwidth=0, relief="flat")
         button_frame.pack(fill="x")
-
+        
+        # create the button on a grid inside the frame -> allow a side by side
         add_button = tkinter.Button(button_frame, text="Add a job", command=self.add_job)
         add_button.grid(row=0, column=0)
         view_button = tkinter.Button(button_frame, text="View", command=self.view_job)
@@ -36,21 +38,27 @@ class WindowApp :
         window_exit = tkinter.Button(button_frame, text="Exit", command=self.m.destroy)
         window_exit.grid(row=0, column=3)
 
+        # create the second frame that host the list of jobs + scrollbar
         list_frame = tkinter.Frame(self.m, borderwidth=0, relief="flat")
         list_frame.pack(expand=True, fill="both")
 
+        # create scrollbar on the right + listbox with a reference to the newly created scrollbar
         scrollbar = tkinter.Scrollbar(list_frame)
         scrollbar.pack(side="right", fill="y")
         list_jobs = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set)
 
+        # populate the listbox with the known jobs 
         for line in range(len(self.default_list)) :
             job = self.default_list[line]
             list_jobs.insert(line, str(job))
 
+        # allow the value of the list to be communicated to the rest of the class
         list_jobs.bind(sequence='<<ListboxSelect>>', func=self.on_select)
+        # finish creating the listbox and scrollbar together
         list_jobs.pack(side="left", fill="both", expand=True)
         scrollbar.config(command=list_jobs.yview)
 
+    # get the name of the new file and set it in a class variable then close the window
     def create_file(self) :
         def return_name(): 
             self.filename = entry.get()
@@ -65,6 +73,7 @@ class WindowApp :
         submit_button = tkinter.Button(n, text="Submit", command=return_name)
         submit_button.grid(row=1)
 
+    # get the path to the file, set it in a class variable to be used in the main app
     def select_file(self) :
         filetype = (
             ('excel files', '*.csv'),
@@ -79,10 +88,12 @@ class WindowApp :
 
         self.filename = filename
     
+    # write into a csv file the modified data to keep them between use
     def save_file(self) :
         # to change with the dump of the data in the csv
         print(str(self.filename))
 
+    # binded with the listbox to get the line in the list and use it on the rest of the app
     def on_select(self, event) :
         selection = event.widget.curselection()
         if selection:
@@ -92,7 +103,8 @@ class WindowApp :
             self.job_index = index
         else:
             pass
-
+    
+    # pulled from a forum -> should be able to determine the screen value even on a multi monitor setup
     def get_curr_screen_geometry(self):
         root = tkinter.Tk()
         root.update_idletasks()
@@ -103,9 +115,11 @@ class WindowApp :
         root.destroy()
         return width, height
     
+    # add a job on the list with all the different data
     def add_job(self) :
         pass
 
+    # view the selected job in the listbox with detailled information
     def view_job(self) :
         if self.job_index != None :
             view_window = tkinter.Tk()
@@ -117,7 +131,7 @@ class WindowApp :
         else :
             messagebox.showwarning("View job","Select a job first !")
 
-
+    # allow the modification of the selected job ( ex : job application refused )
     def edit_job(self) :
         pass
 
@@ -126,7 +140,8 @@ if __name__ == "__main__":
     # tkinter creation
     main = tkinter.Tk()
 
+    # call the class to run the windows app
     app = WindowApp(main)
-
+    # display the window app
     main.mainloop()
 
