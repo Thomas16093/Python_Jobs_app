@@ -52,19 +52,18 @@ class WindowApp :
         scrollbar.config(command=list_jobs.yview)
 
     def create_file(self) :
-        name = tkinter.StringVar()
-
-        def return_name():
+        def return_name(): 
             self.filename = entry.get()
             print("new value : " + str(self.filename))
-            n.destroy
+            n.destroy()
 
         n = tkinter.Tk()
         n.title("New file")
         tkinter.Label(n, text="File name : ").grid(row=0)
-        entry = tkinter.Entry(n, textvariable=name)
+        entry = tkinter.Entry(n)
         entry.grid(row=0, column=1)
-        tkinter.Button(n, text="Submit", command=return_name).grid(row=1)
+        submit_button = tkinter.Button(n, text="Submit", command=return_name)
+        submit_button.grid(row=1)
 
     def select_file(self) :
         filetype = (
