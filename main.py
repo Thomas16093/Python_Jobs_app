@@ -10,7 +10,7 @@ class WindowApp :
     def __init__(self, main):
         self.m = main
         width, height = self.get_curr_screen_geometry()
-        self.m.attributes('-topmost', True) # make window on top -> fix the state left from the screen_geometry func
+        self.m.focus_force() # make window on top -> fix the state left from the screen_geometry func
         self.m.geometry(""+str(int(width / 2))+"x"+str(int(height / 2))+"")
         self.m.title("Jobs list")
 
