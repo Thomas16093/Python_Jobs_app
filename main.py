@@ -6,6 +6,8 @@ class WindowApp :
 
     def __init__(self, main):
         self.m = main
+        width, height = self.get_curr_screen_geometry()
+        self.m.geometry(""+str(int(width / 2))+"x"+str(int(height / 2))+"")
         self.m.title("Jobs list")
 
         window_menu = tkinter.Menu(self.m)
@@ -54,6 +56,15 @@ class WindowApp :
         # to change with the dump of the data in the csv
         print(str(self.filename))
 
+    def get_curr_screen_geometry(self):
+        root = tkinter.Tk()
+        root.update_idletasks()
+        root.attributes('-fullscreen', True)
+        root.state('iconic')
+        width = root.winfo_screenwidth()
+        height = root.winfo_screenheight()
+        root.destroy()
+        return width, height
 
 
 if __name__ == "__main__":
