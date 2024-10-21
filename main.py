@@ -1,5 +1,5 @@
 import tkinter
-import tkinter.filedialog
+from tkinter import messagebox, filedialog
 
 class WindowApp :
     filename = ""
@@ -23,12 +23,24 @@ class WindowApp :
         fileSelector.add_separator()
         fileSelector.add_command(label="Exit", command=self.m.destroy)
 
-        window_exit = tkinter.Button(self.m, text="Exit", command=self.m.destroy)
-        window_exit.pack()
+        button_frame = tkinter.Frame(self.m, borderwidth=0, relief="flat")
+        button_frame.pack(fill="x")
 
-        scrollbar = tkinter.Scrollbar(self.m)
+        add_button = tkinter.Button(button_frame, text="Add a job", command=self.add_job)
+        add_button.grid(row=0, column=0)
+        view_button = tkinter.Button(button_frame, text="View", command=self.view_job)
+        view_button.grid(row=0, column=1)
+        edit_button = tkinter.Button(button_frame, text="Edit", command=self.edit_job)
+        edit_button.grid(row=0, column=2)
+        window_exit = tkinter.Button(button_frame, text="Exit", command=self.m.destroy)
+        window_exit.grid(row=0, column=3)
+
+        list_frame = tkinter.Frame(self.m, borderwidth=0, relief="flat")
+        list_frame.pack(expand=True, fill="both")
+
+        scrollbar = tkinter.Scrollbar(list_frame)
         scrollbar.pack(side="right", fill="y")
-        list_jobs = tkinter.Listbox(self.m, yscrollcommand=scrollbar.set)
+        list_jobs = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set)
 
         for line in range(len(self.default_list)) :
             job = self.default_list[line]
@@ -59,7 +71,7 @@ class WindowApp :
             ('All files', '*.*')
         )
 
-        filename = tkinter.filedialog.askopenfilename(
+        filename = filedialog.askopenfilename(
             title="Open a file",
             initialdir='/', # modify to execution directory
             filetypes=filetype
@@ -90,6 +102,24 @@ class WindowApp :
         height = root.winfo_screenheight()
         root.destroy()
         return width, height
+    
+    def add_job(self) :
+        pass
+
+    def view_job(self) :
+        if self.job_index != None :
+            view_window = tkinter.Tk()
+            view_window.title("Job : " + str(self.selected_job))
+            job_label = tkinter.Label(view_window, text=self.selected_job)
+            job_label.pack()
+            exit_button = tkinter.Button(view_window, text="Exit", command=view_window.destroy)
+            exit_button.pack()
+        else :
+            messagebox.showwarning("View job","Select a job first !")
+
+
+    def edit_job(self) :
+        pass
 
 
 if __name__ == "__main__":
