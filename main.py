@@ -4,7 +4,7 @@ from tkinter import messagebox, filedialog
 class WindowApp :
     filename = ""
     selected_job = ""
-    job_index = 0
+    job_index = None
     default_list = ["Jobs 1", "Jobs 2", "Jobs 3", "Jobs 4", "Jobs 5", "Jobs 6", "Jobs 7", "Jobs 8", "Jobs 9", "Jobs 10", "Jobs 11"]
 
     def __init__(self, main):
