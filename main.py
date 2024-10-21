@@ -25,9 +25,9 @@ class WindowApp :
         name = tkinter.StringVar()
 
         def return_name():
-                    self.filename = entry.get()
-                    print("new value : " + str(self.filename))
-                    n.destroy
+            self.filename = entry.get()
+            print("new value : " + str(self.filename))
+            n.destroy
 
         n = tkinter.Tk()
         n.title("New file")
@@ -35,8 +35,6 @@ class WindowApp :
         entry = tkinter.Entry(n, textvariable=name)
         entry.grid(row=0, column=1)
         tkinter.Button(n, text="Submit", command=return_name).grid(row=1)
-
-        
 
     def select_file(self) :
         filetype = (
