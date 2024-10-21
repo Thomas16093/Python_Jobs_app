@@ -14,16 +14,14 @@ class WindowApp :
         self.m.config(menu=window_menu)
         fileSelector = tkinter.Menu(window_menu, tearoff=0)
         window_menu.add_cascade(label="File", menu=fileSelector)
-        fileSelector.add_command(label="New", command=self.createFile)
+        fileSelector.add_command(label="New", command=self.create_file)
         fileSelector.add_command(label="Open", command=self.select_file)
         fileSelector.add_command(label="Save", command=self.save_file)
         fileSelector.add_separator()
         fileSelector.add_command(label="Exit", command=self.m.destroy)
 
         window_exit = tkinter.Button(self.m, text="Exit", command=self.m.destroy)
-        window_exit.pack(expand=True)
-
-    def createFile(self) :
+    def create_file(self) :
         name = tkinter.StringVar()
 
         def return_name():
