@@ -1,8 +1,11 @@
+import csv
 import tkinter
 from tkinter import messagebox, filedialog
 from tkcalendar import DateEntry
+from pathlib import Path
 
 class WindowApp :
+    file = None
     filename = ""
     selected_job = ""
     job_index = None
@@ -101,6 +104,7 @@ class WindowApp :
         )
 
         self.filename = filename
+        self.load_list_from_file(self.filename)
     
     # write into a csv file the modified data to keep them between use
     def save_file(self) :
@@ -234,6 +238,31 @@ class WindowApp :
                     job = list[line]["job_name"]
                     self.listbox_jobs.insert(line, str(job))
 
+    # load the file selected from the file picker
+    def load_list_from_file(self, path_to_file):
+        if Path(path_to_file).is_file() :
+            # open the file and load jobs into a list to send it in refresh_list
+            jobs_from_file = []
+            with open(path_to_file) as file:
+                reader = csv.reader(file, delimiter=";")
+                for values in reader:
+                    # test if the job has all the values in the file -> if not add a blank one
+                    if len(values) < 5 : 
+                        for i in range(len(values), 5) :
+                            values.append("")
+                    # reference the value of the job in the correct properties
+                    job = {"job_name" : values[0], "enterprise_name" : values[1], "job_status" : values[2], "job_date" : values[3], "description" : values[4] }
+                    jobs_from_file.append(job)
+                    # refresh the listbox to dipslay the jobs read from the file
+                    self.refresh_list(jobs_from_file, creation=False)
+                for jobs in jobs_from_file :
+                    print(str(jobs))
+        else :
+            # create the file and refresh the listbox
+            # needed if the file picker send a non-existant file
+            self.file = open(self.filename, "w")
+            self.refresh_list([], creation=True)
+
 
 if __name__ == "__main__":
     # tkinter creation
@@ -241,6 +270,6 @@ if __name__ == "__main__":
 
     # call the class to run the windows app
     app = WindowApp(main)
+
     # display the window app
     main.mainloop()
-
