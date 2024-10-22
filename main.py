@@ -177,7 +177,45 @@ class WindowApp :
 
     # allow the modification of the selected job ( ex : job application refused )
     def edit_job(self) :
-        pass
+        if self.job_index != None :
+            def submit_job():
+                job = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" }
+                job["job_name"] = job_name_entry.get()
+                job["enterprise_name"] = enterprise_name_entry.get()
+                job["job_status"] = job_status_entry.get()
+                job["job_date"] = job_date_entry.get_date()
+                job["description"] = job_description.get()
+                self.jobs_list.pop(self.job_index)
+                self.jobs_list.insert(self.job_index, job)
+                self.refresh_list(self.jobs_list, creation=False)
+                edit_window.destroy()
+            edit_window = tkinter.Tk()
+            edit_window.title("Edit job : " + str(self.selected_job))
+            tkinter.Label(edit_window, text="Job Name").grid(row=0, column=0)
+            tkinter.Label(edit_window, text="Enterprise").grid(row=0, column=1)
+            tkinter.Label(edit_window, text="Job Status").grid(row=0, column=2)
+            tkinter.Label(edit_window, text="Application date").grid(row=0, column=3)
+            tkinter.Label(edit_window, text="Job description").grid(row=0, column=4)
+            current_job = self.jobs_list[self.job_index]
+            job_name_entry = tkinter.Entry(edit_window)
+            job_name_entry.insert(0, str(current_job["job_name"]))
+            job_name_entry.grid(row=1, column=0)
+            enterprise_name_entry = tkinter.Entry(edit_window)
+            enterprise_name_entry.insert(0, str(current_job["enterprise_name"]))
+            enterprise_name_entry.grid(row=1, column=1)
+            job_status_entry = tkinter.Entry(edit_window)
+            job_status_entry.insert(0, str(current_job["job_status"]))
+            job_status_entry.grid(row=1, column=2)
+            job_date_entry = DateEntry(edit_window)
+            if current_job["job_date"] != "" : job_date_entry.set_date(current_job["job_date"])
+            job_date_entry.grid(row=1, column=3)
+            job_description = tkinter.Entry(edit_window)
+            job_description.insert(0, str(current_job["description"]))
+            job_description.grid(row=1, column=4)
+            tkinter.Button(edit_window, text="Edit", command=submit_job).grid(row=1, column=5)
+        else :
+            messagebox.showwarning("Edit job","Select a job first !")
+
 
     def refresh_list(self, list, creation) :
         if creation :
