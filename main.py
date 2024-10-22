@@ -1,5 +1,4 @@
 import tkinter
-import datetime
 from tkinter import messagebox, filedialog
 from tkcalendar import DateEntry
 
