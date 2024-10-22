@@ -132,7 +132,34 @@ class WindowApp :
     
     # add a job on the list with all the different data
     def add_job(self) :
-        pass
+        def submit_job():
+            job = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" }
+            job["job_name"] = job_name_entry.get()
+            job["enterprise_name"] = enterprise_name_entry.get()
+            job["job_status"] = job_status_entry.get()
+            job["job_date"] = job_date_entry.get_date()
+            job["description"] = job_description.get()
+            self.jobs_list.insert(len(self.jobs_list), job)
+            self.refresh_list(self.jobs_list, creation=False)
+            a.destroy()
+        a = tkinter.Tk()
+        a.title("Add a job")
+        tkinter.Label(a, text="Job Name").grid(row=0, column=0)
+        tkinter.Label(a, text="Enterprise").grid(row=0, column=1)
+        tkinter.Label(a, text="Job Status").grid(row=0, column=2)
+        tkinter.Label(a, text="Application date").grid(row=0, column=3)
+        tkinter.Label(a, text="Job description").grid(row=0, column=4)
+        job_name_entry = tkinter.Entry(a)
+        job_name_entry.grid(row=1, column=0)
+        enterprise_name_entry = tkinter.Entry(a)
+        enterprise_name_entry.grid(row=1, column=1)
+        job_status_entry = tkinter.Entry(a)
+        job_status_entry.grid(row=1, column=2)
+        job_date_entry = DateEntry(a)
+        job_date_entry.grid(row=1, column=3)
+        job_description = tkinter.Entry(a)
+        job_description.grid(row=1, column=4)
+        submit_button = tkinter.Button(a, text="Add", command=submit_job).grid(row=1, column=5)
 
     # view the selected job in the listbox with detailled information
     def view_job(self) :
