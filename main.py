@@ -158,7 +158,7 @@ class WindowApp :
         job_date_entry.grid(row=1, column=3)
         job_description = tkinter.Entry(a)
         job_description.grid(row=1, column=4)
-        submit_button = tkinter.Button(a, text="Add", command=submit_job).grid(row=1, column=5)
+        tkinter.Button(a, text="Add", command=submit_job).grid(row=1, column=5)
 
     # view the selected job in the listbox with detailled information
     def view_job(self) :
