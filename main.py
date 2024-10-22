@@ -78,6 +78,7 @@ class WindowApp :
             # set the file was not written with the extension -> add it ourselves
             if (self.filename.endswith('.csv') == False) :
                 self.filename = self.filename + str('.csv')
+            self.refresh_list([], creation=True)
             n.destroy()
         n = tkinter.Tk()
         n.title("New file")
@@ -150,6 +151,24 @@ class WindowApp :
     # allow the modification of the selected job ( ex : job application refused )
     def edit_job(self) :
         pass
+
+    def refresh_list(self, list, creation) :
+        if creation :
+            self.listbox_jobs.delete(0, len(self.jobs_list))
+            self.jobs_list = list
+        else :
+            if len(list) > len(self.jobs_list) :
+                for line in range(len(list)) :
+                    job = list[line]["job_name"]
+                    if (self.jobs_list.__contains__(job) == False) :
+                        self.jobs_list.append(job)
+                        self.listbox_jobs.insert(line, str(job))
+            else : 
+                self.listbox_jobs.delete(0, len(self.jobs_list))
+                self.jobs_list = list
+                for line in range(len(list)) :
+                    job = list[line]["job_name"]
+                    self.listbox_jobs.insert(line, str(job))
 
 
 if __name__ == "__main__":
