@@ -1,11 +1,24 @@
 import tkinter
+import datetime
 from tkinter import messagebox, filedialog
+from tkcalendar import DateEntry
 
 class WindowApp :
     filename = ""
     selected_job = ""
     job_index = None
-    default_list = ["Jobs 1", "Jobs 2", "Jobs 3", "Jobs 4", "Jobs 5", "Jobs 6", "Jobs 7", "Jobs 8", "Jobs 9", "Jobs 10", "Jobs 11"]
+    jobs_list = [{"job_name" : "Jobs 1", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
+                {"job_name" : "Jobs 2", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
+                {"job_name" : "Jobs 3", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
+                {"job_name" : "Jobs 4", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
+                {"job_name" : "Jobs 5", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
+                {"job_name" : "Jobs 6", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
+                {"job_name" : "Jobs 7", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
+                {"job_name" : "Jobs 8", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
+                {"job_name" : "Jobs 9", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
+                {"job_name" : "Jobs 10", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
+                {"job_name" : "Jobs 11", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" }]
+    listbox_jobs = None
 
     def __init__(self, main):
         self.m = main
@@ -45,18 +58,18 @@ class WindowApp :
         # create scrollbar on the right + listbox with a reference to the newly created scrollbar
         scrollbar = tkinter.Scrollbar(list_frame)
         scrollbar.pack(side="right", fill="y")
-        list_jobs = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set)
+        self.listbox_jobs = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set)
 
         # populate the listbox with the known jobs 
-        for line in range(len(self.default_list)) :
-            job = self.default_list[line]
-            list_jobs.insert(line, str(job))
+        for line in range(len(self.jobs_list)) :
+            job = self.jobs_list[line]["job_name"]
+            self.listbox_jobs.insert(line, str(job))
 
         # allow the value of the list to be communicated to the rest of the class
-        list_jobs.bind(sequence='<<ListboxSelect>>', func=self.on_select)
+        self.listbox_jobs.bind(sequence='<<ListboxSelect>>', func=self.on_select)
         # finish creating the listbox and scrollbar together
-        list_jobs.pack(side="left", fill="both", expand=True)
-        scrollbar.config(command=list_jobs.yview)
+        self.listbox_jobs.pack(side="left", fill="both", expand=True)
+        scrollbar.config(command=self.listbox_jobs.yview)
 
     # get the name of the new file and set it in a class variable then close the window
     def create_file(self) :
@@ -125,10 +138,12 @@ class WindowApp :
         if self.job_index != None :
             view_window = tkinter.Tk()
             view_window.title("Job : " + str(self.selected_job))
-            job_label = tkinter.Label(view_window, text=self.selected_job)
-            job_label.pack()
-            exit_button = tkinter.Button(view_window, text="Exit", command=view_window.destroy)
-            exit_button.pack()
+            tkinter.Label(view_window, text=self.selected_job).grid(row=0, column=0)
+            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["enterprise_name"]).grid(row=0, column=1)
+            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["job_status"]).grid(row=0, column=2)
+            tkinter.Label(view_window, text=str(self.jobs_list[self.job_index]["job_date"])).grid(row=0, column=3)
+            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["description"]).grid(row=0, column=4)
+            tkinter.Button(view_window, text="Exit", command=view_window.destroy).grid(row=1)
         else :
             messagebox.showwarning("View job","Select a job first !")
 
