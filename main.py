@@ -62,9 +62,10 @@ class WindowApp :
     def create_file(self) :
         def return_name(): 
             self.filename = entry.get()
-            print("new value : " + str(self.filename))
+            # set the file was not written with the extension -> add it ourselves
+            if (self.filename.endswith('.csv') == False) :
+                self.filename = self.filename + str('.csv')
             n.destroy()
-
         n = tkinter.Tk()
         n.title("New file")
         tkinter.Label(n, text="File name : ").grid(row=0)
