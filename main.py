@@ -113,8 +113,10 @@ class WindowApp :
             filetypes=filetype
         )
 
-        self.filename = filename
-        self.load_list_from_file(self.filename)
+        # check if a file was select before calling the file loader
+        if filename != "" :
+            self.filename = filename
+            self.load_list_from_file(self.filename)
     
     # write into a csv file the modified data to keep them between use
     def save_file(self) :
