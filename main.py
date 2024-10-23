@@ -43,16 +43,25 @@ class WindowApp :
         # create a frame to host the button of my main window
         button_frame = tkinter.Frame(self.m, borderwidth=0, relief="flat")
         button_frame.pack(fill="x")
+
+        # create two frame to allow the exit button to be on the right side
+        left_button_frame = tkinter.Frame(button_frame)
+        left_button_frame.pack(side="left")
         
-        # create the button on a grid inside the frame -> allow a side by side
-        add_button = tkinter.Button(button_frame, text="Add a job", command=self.add_job)
+        right_button_frame = tkinter.Frame(button_frame)
+        right_button_frame.pack(side="right")
+        
+        # create the button on a grid inside the frames -> allow a side by side
+        add_button = tkinter.Button(left_button_frame, text="Add a job", command=self.add_job)
         add_button.grid(row=0, column=0)
-        view_button = tkinter.Button(button_frame, text="View", command=self.view_job)
+        view_button = tkinter.Button(left_button_frame, text="View", command=self.view_job)
         view_button.grid(row=0, column=1)
-        edit_button = tkinter.Button(button_frame, text="Edit", command=self.edit_job)
+        edit_button = tkinter.Button(left_button_frame, text="Edit", command=self.edit_job)
         edit_button.grid(row=0, column=2)
-        window_exit = tkinter.Button(button_frame, text="Exit", command=self.m.destroy)
-        window_exit.grid(row=0, column=3)
+
+        # place Exit button in it's own frame to allow a placement on the right side
+        window_exit = tkinter.Button(right_button_frame, text="Exit", command=self.m.destroy)
+        window_exit.grid(row=0, column=0, sticky="e")
 
         # create the second frame that host the list of jobs + scrollbar
         list_frame = tkinter.Frame(self.m, borderwidth=0, relief="flat")
