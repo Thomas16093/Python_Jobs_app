@@ -109,6 +109,15 @@ class WindowApp :
     # write into a csv file the modified data to keep them between use
     def save_file(self) :
         # to change with the dump of the data in the csv
+        with open(self.filename, "w", newline='') as save_file : 
+            csv_out = csv.writer(save_file, delimiter=";", lineterminator="\n")
+            for row_out in self.jobs_list :
+                job_out = [row_out["job_name"],row_out["enterprise_name"],row_out["job_status"],row_out["job_date"],row_out["description"]]
+                print("writing : " + str(job_out))
+                for i, entry in zip(range(len(job_out)),job_out) :
+                    if entry == None :
+                        job_out[i] = ""
+                csv_out.writerow(job_out)
         print(str(self.filename))
 
     # binded with the listbox to get the line in the list and use it on the rest of the app
@@ -251,7 +260,13 @@ class WindowApp :
                         for i in range(len(values), 5) :
                             values.append("")
                     # reference the value of the job in the correct properties
-                    job = {"job_name" : values[0], "enterprise_name" : values[1], "job_status" : values[2], "job_date" : values[3], "description" : values[4] }
+                    job = {"job_name" : values[0], "enterprise_name" : values[1], "job_status" : values[2], "job_date" : values[3], "description" : values[4]}
+
+                    # convert string date to proper date
+                    if job["job_date"] != "" :
+                        job_date = job["job_date"].split("-")
+                        job["job_date"] = date(int(job_date[0]), int(job_date[1]), int(job_date[2]))
+
                     jobs_from_file.append(job)
                     # refresh the listbox to dipslay the jobs read from the file
                     self.refresh_list(jobs_from_file, creation=False)
