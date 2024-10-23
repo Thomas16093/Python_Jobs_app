@@ -2,6 +2,7 @@ import csv
 import tkinter
 from tkinter import messagebox, filedialog
 from tkcalendar import DateEntry
+from datetime import date
 from pathlib import Path
 
 class WindowApp :
@@ -149,7 +150,9 @@ class WindowApp :
             job["job_name"] = job_name_entry.get()
             job["enterprise_name"] = enterprise_name_entry.get()
             job["job_status"] = job_status_entry.get()
-            job["job_date"] = job_date_entry.get_date()
+            if job_date_entry.get_date() != date(2000, 1, 1) :
+                job["job_date"] = job_date_entry.get_date()
+            else : job["job_date"] = ""
             job["description"] = job_description.get()
             self.jobs_list.insert(len(self.jobs_list), job)
             self.refresh_list(self.jobs_list, creation=False)
@@ -167,7 +170,7 @@ class WindowApp :
         enterprise_name_entry.grid(row=1, column=1)
         job_status_entry = tkinter.Entry(a)
         job_status_entry.grid(row=1, column=2)
-        job_date_entry = DateEntry(a)
+        job_date_entry = DateEntry(a, year=2000, month=1, day=1)
         job_date_entry.grid(row=1, column=3)
         job_description = tkinter.Entry(a)
         job_description.grid(row=1, column=4)
@@ -195,7 +198,9 @@ class WindowApp :
                 job["job_name"] = job_name_entry.get()
                 job["enterprise_name"] = enterprise_name_entry.get()
                 job["job_status"] = job_status_entry.get()
-                job["job_date"] = job_date_entry.get_date()
+                if job_date_entry.get_date() != date(2000, 1, 1) :
+                    job["job_date"] = job_date_entry.get_date()
+                else : job["job_date"] = ""
                 job["description"] = job_description.get()
                 self.jobs_list.pop(self.job_index)
                 self.jobs_list.insert(self.job_index, job)
@@ -218,7 +223,7 @@ class WindowApp :
             job_status_entry = tkinter.Entry(edit_window)
             job_status_entry.insert(0, str(current_job["job_status"]))
             job_status_entry.grid(row=1, column=2)
-            job_date_entry = DateEntry(edit_window)
+            job_date_entry = DateEntry(edit_window, year=2000, month=1, day=1)
             if current_job["job_date"] != "" : job_date_entry.set_date(current_job["job_date"])
             job_date_entry.grid(row=1, column=3)
             job_description = tkinter.Entry(edit_window)
