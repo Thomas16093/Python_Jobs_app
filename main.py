@@ -73,9 +73,7 @@ class WindowApp :
         self.listbox_jobs = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set)
 
         # populate the listbox with the known jobs 
-        for line in range(len(self.jobs_list)) :
-            job = self.jobs_list[line]["job_name"]
-            self.listbox_jobs.insert(line, str(job))
+        self.refresh_list(self.jobs_list, creation=False)
 
         # allow the value of the list to be communicated to the rest of the class
         self.listbox_jobs.bind(sequence='<<ListboxSelect>>', func=self.on_select)
