@@ -21,7 +21,7 @@ class WindowApp :
                 {"job_name" : "Jobs 9", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
                 {"job_name" : "Jobs 10", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
                 {"job_name" : "Jobs 11", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" }]
-    listbox_jobs = None
+    listboxs = []
 
     def __init__(self, main):
         self.m = main
@@ -70,16 +70,40 @@ class WindowApp :
         # create scrollbar on the right + listbox with a reference to the newly created scrollbar
         scrollbar = tkinter.Scrollbar(list_frame)
         scrollbar.pack(side="right", fill="y")
-        self.listbox_jobs = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set)
+        listbox_jobs = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set)
+        listbox_enterprise = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set)
+        listbox_status = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set)
+
+        self.listboxs.append(listbox_jobs)
+        self.listboxs.append(listbox_enterprise)
+        self.listboxs.append(listbox_status)
 
         # populate the listbox with the known jobs 
-        self.refresh_list(self.jobs_list, creation=False)
+        self.refresh_all_listbox(self.listboxs, self.jobs_list)
+        
+        for index in range(len(self.listboxs)) :
+            # allow the value of the list to be communicated to the rest of the class
+            self.listboxs[index].bind(sequence='<<ListboxSelect>>', func=self.on_select)
+            self.listboxs[index].bind(sequence='<MouseWheel>', func=self.OnMouseWheel)
+            # finish creating the listbox
+            if index != 0 :
+                self.listboxs[index].pack(side="left", after=self.listboxs[index-1], fill="both", expand=True)
+            else :
+                self.listboxs[index].pack(side="left", fill="both", expand=True)
 
-        # allow the value of the list to be communicated to the rest of the class
-        self.listbox_jobs.bind(sequence='<<ListboxSelect>>', func=self.on_select)
-        # finish creating the listbox and scrollbar together
-        self.listbox_jobs.pack(side="left", fill="both", expand=True)
-        scrollbar.config(command=self.listbox_jobs.yview)
+        # finish creating scrollbar
+        scrollbar.config(command=self.yview)
+
+    def yview(self, *args) :
+        for index in range(len(self.listboxs)) :
+            self.listboxs[index].yview(*args)
+
+    def OnMouseWheel(self, event):
+        for index in range(len(self.listboxs)) :
+            self.listboxs[index].yview("scroll", event.delta, "units")
+        # this prevents default bindings from firing, which
+        # would end up scrolling the widget twice
+        return "break"
 
     # get the name of the new file and set it in a class variable then close the window
     def create_file(self) :
@@ -88,7 +112,7 @@ class WindowApp :
             # set the file was not written with the extension -> add it ourselves
             if (self.filename.endswith('.csv') == False) :
                 self.filename = self.filename + str('.csv')
-            self.refresh_list([], creation=True)
+            self.refresh_all_listbox(self.listboxs, [], creation=True)
             n.destroy()
         n = tkinter.Tk()
         n.title("New file")
@@ -164,7 +188,7 @@ class WindowApp :
             else : job["job_date"] = ""
             job["description"] = job_description.get()
             self.jobs_list.insert(len(self.jobs_list), job)
-            self.refresh_list(self.jobs_list, creation=False)
+            self.refresh_all_listbox(self.listboxs, self.jobs_list)
             a.destroy()
         a = tkinter.Tk()
         a.title("Add a job")
@@ -213,7 +237,7 @@ class WindowApp :
                 job["description"] = job_description.get()
                 self.jobs_list.pop(self.job_index)
                 self.jobs_list.insert(self.job_index, job)
-                self.refresh_list(self.jobs_list, creation=False)
+                self.refresh_all_listbox(self.listboxs, self.jobs_list)
                 edit_window.destroy()
             edit_window = tkinter.Tk()
             edit_window.title("Edit job : " + str(self.selected_job))
@@ -243,23 +267,27 @@ class WindowApp :
             messagebox.showwarning("Edit job","Select a job first !")
 
 
-    def refresh_list(self, list, creation) :
+    def refresh_list(self, list_box : tkinter.Listbox, list : dict, creation : bool) :
         if creation :
-            self.listbox_jobs.delete(0, len(self.jobs_list))
+            list_box.delete(0, len(self.jobs_list))
             self.jobs_list = list
         else :
             if len(list) > len(self.jobs_list) :
                 for line in range(len(list)) :
                     job = list[line]["job_name"]
-                    if (self.jobs_list.__contains__(job) == False) :
+                    if job in self.jobs_list.__contains__(job):
                         self.jobs_list.append(job)
-                        self.listbox_jobs.insert(line, str(job))
+                        list_box.insert(line, str(job))
             else : 
-                self.listbox_jobs.delete(0, len(self.jobs_list))
+                list_box.delete(0, len(self.jobs_list))
                 self.jobs_list = list
                 for line in range(len(list)) :
                     job = list[line]["job_name"]
-                    self.listbox_jobs.insert(line, str(job))
+                    list_box.insert(line, str(job))
+    
+    def refresh_all_listbox(self, listboxs, list_jobs : dict, value_creation = False) :
+        for i in range(len(listboxs)) :
+            self.refresh_list(listboxs[i], list_jobs, value_creation)
 
     # load the file selected from the file picker
     def load_list_from_file(self, path_to_file):
@@ -283,14 +311,14 @@ class WindowApp :
 
                     jobs_from_file.append(job)
                     # refresh the listbox to dipslay the jobs read from the file
-                    self.refresh_list(jobs_from_file, creation=False)
+                    self.refresh_all_listbox(self.listboxs, jobs_from_file)
                 for jobs in jobs_from_file :
                     print(str(jobs))
         else :
             # create the file and refresh the listbox
             # needed if the file picker send a non-existant file
             self.file = open(self.filename, "w")
-            self.refresh_list([], creation=True)
+            self.refresh_all_listbox(self.listboxs, [], True)
 
 
 if __name__ == "__main__":
