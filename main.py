@@ -87,7 +87,7 @@ class WindowApp :
         self.listboxs_value.append("job_status")
 
         # populate the listbox with the known jobs 
-        self.refresh_all_listbox(self.listboxs, self.jobs_list)
+        self.refresh_all_listbox(self.jobs_list)
         
         for index in range(len(self.listboxs)) :
             # allow the value of the list to be communicated to the rest of the class
@@ -120,7 +120,7 @@ class WindowApp :
             # set the file was not written with the extension -> add it ourselves
             if (self.filename.endswith('.csv') == False) :
                 self.filename = self.filename + str('.csv')
-            self.refresh_all_listbox(self.listboxs, [], creation=True)
+            self.refresh_all_listbox([], creation=True)
             n.destroy()
         n = tkinter.Tk()
         n.title("New file")
@@ -208,7 +208,7 @@ class WindowApp :
             else : job["job_date"] = ""
             job["description"] = job_description.get()
             self.jobs_list.insert(len(self.jobs_list), job)
-            self.refresh_all_listbox(self.listboxs, self.jobs_list)
+            self.refresh_all_listbox(self.jobs_list)
             a.destroy()
         a = tkinter.Tk()
         a.title("Add a job")
@@ -257,7 +257,7 @@ class WindowApp :
                 job["description"] = job_description.get()
                 self.jobs_list.pop(self.job_index)
                 self.jobs_list.insert(self.job_index, job)
-                self.refresh_all_listbox(self.listboxs, self.jobs_list)
+                self.refresh_all_listbox(self.jobs_list)
                 edit_window.destroy()
             edit_window = tkinter.Tk()
             edit_window.title("Edit job : " + str(self.selected_job))
@@ -305,11 +305,11 @@ class WindowApp :
                     job = list[line][list_value]
                     list_box.insert(line, str(job))
     
-    def refresh_all_listbox(self, listboxs, list_jobs : dict, value_creation = False) :
+    def refresh_all_listbox(self, list_jobs : dict, value_creation = False) :
         if len(self.listboxs) != len(self.listboxs_value) : 
             print("error : inconsistency between number of listbox and the value displayed in it !")
-        for i in range(len(listboxs)) :
-            self.refresh_list(listboxs[i], list_jobs, self.listboxs_value[i], value_creation)
+        for i in range(len(self.listboxs)) :
+            self.refresh_list(self.listboxs[i], list_jobs, self.listboxs_value[i], value_creation)
 
     # load the file selected from the file picker
     def load_list_from_file(self, path_to_file):
@@ -333,14 +333,14 @@ class WindowApp :
 
                     jobs_from_file.append(job)
                     # refresh the listbox to dipslay the jobs read from the file
-                    self.refresh_all_listbox(self.listboxs, jobs_from_file)
+                    self.refresh_all_listbox(jobs_from_file)
                 for jobs in jobs_from_file :
                     print(str(jobs))
         else :
             # create the file and refresh the listbox
             # needed if the file picker send a non-existant file
             self.file = open(self.filename, "w")
-            self.refresh_all_listbox(self.listboxs, [], True)
+            self.refresh_all_listbox([], True)
 
 
 if __name__ == "__main__":
