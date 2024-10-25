@@ -23,6 +23,10 @@ class WindowApp :
                 {"job_name" : "Jobs 11", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" }]
     listboxs = []
     listboxs_value = []
+    dropdown_menu = tkinter.OptionMenu
+    enterprise_is_filtered = False
+    enterprise_filter = []
+    dropdown_variable = None
     event_listbox = None
 
     def __init__(self, main):
@@ -49,6 +53,9 @@ class WindowApp :
         # create two frame to allow the exit button to be on the right side
         left_button_frame = tkinter.Frame(button_frame)
         left_button_frame.pack(side="left")
+
+        center_button_frame = tkinter.Frame(button_frame)
+        center_button_frame.pack(side="left", after=left_button_frame)
         
         right_button_frame = tkinter.Frame(button_frame)
         right_button_frame.pack(side="right")
@@ -60,6 +67,12 @@ class WindowApp :
         view_button.grid(row=0, column=1)
         edit_button = tkinter.Button(left_button_frame, text="Edit", command=self.edit_job)
         edit_button.grid(row=0, column=2)
+
+        # create the filter dropdown list
+        filter_label = tkinter.Label(center_button_frame, text="filter with : ")
+        filter_label.pack(side="left")
+        self.dropdown_menu = tkinter.OptionMenu(center_button_frame, variable=self.dropdown_variable, value=self.enterprise_filter, command=self.refresh_with_filter)
+        self.dropdown_menu.pack(side="left", after=filter_label, expand=True)
 
         # place Exit button in it's own frame to allow a placement on the right side
         window_exit = tkinter.Button(right_button_frame, text="Exit", command=self.m.destroy)
@@ -291,6 +304,8 @@ class WindowApp :
         if creation :
             list_box.delete(0, len(self.jobs_list))
             self.jobs_list = list
+            self.enterprise_filter = []
+            self.enterprise_is_filtered = False
         else :
             if len(list) > len(self.jobs_list) :
                 for line in range(len(list)) :
@@ -304,12 +319,45 @@ class WindowApp :
                 for line in range(len(list)) :
                     job = list[line][list_value]
                     list_box.insert(line, str(job))
+            if self.enterprise_is_filtered == False:
+                for index in range(len(self.jobs_list)) :
+                    current_enterprise = self.jobs_list[index]["enterprise_name"]
+                    if current_enterprise not in self.enterprise_filter : self.enterprise_filter.append(current_enterprise)
+                self.refresh_dropdown_menu()
     
     def refresh_all_listbox(self, list_jobs : dict, value_creation = False) :
         if len(self.listboxs) != len(self.listboxs_value) : 
             print("error : inconsistency between number of listbox and the value displayed in it !")
         for i in range(len(self.listboxs)) :
             self.refresh_list(self.listboxs[i], list_jobs, self.listboxs_value[i], value_creation)
+
+    def refresh_with_filter(self) :
+        enterprise_selected = self.dropdown_variable
+        print("selected enterprise : " + str(enterprise_selected))
+        if enterprise_selected == None :
+            self.enterprise_is_filtered = False
+            self.refresh_all_listbox(self.jobs_list, False)
+        else :
+            self.enterprise_is_filtered = True
+            filtered_jobs = []
+            for job in self.jobs_list :
+                if job["enterprise_name"] == enterprise_selected :
+                    filtered_jobs.append(job)
+                else : pass
+            self.refresh_all_listbox(filtered_jobs)
+
+    def refresh_dropdown_menu(self) :
+        menu = tkinter.OptionMenu
+        menu = self.dropdown_menu["menu"]
+        menu.delete(0, "end")
+
+        # bypass the automatic affectation of OptionMenu that doesn't work for my need 
+        menu.add_command(label="", command = lambda value="" : (setattr(self, 'dropdown_variable', value), self.refresh_with_filter()))
+        for string in self.enterprise_filter:
+            if string != "" :
+                menu.add_command(label=string,
+                            command = lambda value=string: (setattr(self, 'dropdown_variable', value), self.refresh_with_filter())) 
+            else : pass
 
     # load the file selected from the file picker
     def load_list_from_file(self, path_to_file):
@@ -333,6 +381,7 @@ class WindowApp :
 
                     jobs_from_file.append(job)
                     # refresh the listbox to dipslay the jobs read from the file
+                    self.refresh_all_listbox(self.jobs_list, True)
                     self.refresh_all_listbox(jobs_from_file)
                 for jobs in jobs_from_file :
                     print(str(jobs))
