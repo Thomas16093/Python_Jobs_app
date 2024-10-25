@@ -22,6 +22,8 @@ class WindowApp :
                 {"job_name" : "Jobs 10", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
                 {"job_name" : "Jobs 11", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" }]
     listboxs = []
+    listboxs_value = []
+    event_listbox = None
 
     def __init__(self, main):
         self.m = main
@@ -70,13 +72,19 @@ class WindowApp :
         # create scrollbar on the right + listbox with a reference to the newly created scrollbar
         scrollbar = tkinter.Scrollbar(list_frame)
         scrollbar.pack(side="right", fill="y")
-        listbox_jobs = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set)
-        listbox_enterprise = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set)
-        listbox_status = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set)
+        listbox_jobs = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set, exportselection=0)
+        listbox_enterprise = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set, exportselection=0)
+        listbox_status = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set, exportselection=0)
 
+        # add each listbox to the array -> allow a simpler action on each one for the rest of the program
         self.listboxs.append(listbox_jobs)
+        self.listboxs_value.append("job_name")
+
         self.listboxs.append(listbox_enterprise)
+        self.listboxs_value.append("enterprise_name")
+
         self.listboxs.append(listbox_status)
+        self.listboxs_value.append("job_status")
 
         # populate the listbox with the known jobs 
         self.refresh_all_listbox(self.listboxs, self.jobs_list)
@@ -158,10 +166,22 @@ class WindowApp :
     def on_select(self, event) :
         selection = event.widget.curselection()
         if selection:
-            index = selection[0]
-            data = event.widget.get(index)
-            self.selected_job = data
-            self.job_index = index
+            if selection[0] != self.job_index :
+                index = selection[0]
+                data = self.jobs_list[index]["job_name"]
+                #data = event.widget.get(index)
+                self.event_listbox = event.widget
+                self.selected_job = data
+                self.job_index = index
+                # allow multi selection
+                # will select the same job in each row help visualize each value of a job
+                for i in range(len(self.listboxs)) :
+                    if self.listboxs[i] != self.event_listbox :
+                        self.listboxs[i].selection_clear(0, len(self.jobs_list))
+                        self.listboxs[i].selection_set(index, index)
+                    else : pass
+            else :
+                pass
         else:
             pass
     
@@ -267,14 +287,14 @@ class WindowApp :
             messagebox.showwarning("Edit job","Select a job first !")
 
 
-    def refresh_list(self, list_box : tkinter.Listbox, list : dict, creation : bool) :
+    def refresh_list(self, list_box : tkinter.Listbox, list : dict, list_value : str, creation : bool) :
         if creation :
             list_box.delete(0, len(self.jobs_list))
             self.jobs_list = list
         else :
             if len(list) > len(self.jobs_list) :
                 for line in range(len(list)) :
-                    job = list[line]["job_name"]
+                    job = list[line][list_value]
                     if job in self.jobs_list.__contains__(job):
                         self.jobs_list.append(job)
                         list_box.insert(line, str(job))
@@ -282,12 +302,14 @@ class WindowApp :
                 list_box.delete(0, len(self.jobs_list))
                 self.jobs_list = list
                 for line in range(len(list)) :
-                    job = list[line]["job_name"]
+                    job = list[line][list_value]
                     list_box.insert(line, str(job))
     
     def refresh_all_listbox(self, listboxs, list_jobs : dict, value_creation = False) :
+        if len(self.listboxs) != len(self.listboxs_value) : 
+            print("error : inconsistency between number of listbox and the value displayed in it !")
         for i in range(len(listboxs)) :
-            self.refresh_list(listboxs[i], list_jobs, value_creation)
+            self.refresh_list(listboxs[i], list_jobs, self.listboxs_value[i], value_creation)
 
     # load the file selected from the file picker
     def load_list_from_file(self, path_to_file):
