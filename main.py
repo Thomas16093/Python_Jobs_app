@@ -307,29 +307,21 @@ class WindowApp :
             self.enterprise_filter = []
             self.enterprise_is_filtered = False
         else :
-            if len(list) > len(self.jobs_list) :
-                for line in range(len(list)) :
-                    job = list[line][list_value]
-                    if job in self.jobs_list.__contains__(job):
-                        self.jobs_list.append(job)
-                        list_box.insert(line, str(job))
-            else : 
-                list_box.delete(0, len(self.jobs_list))
-                self.jobs_list = list
-                for line in range(len(list)) :
-                    job = list[line][list_value]
-                    list_box.insert(line, str(job))
-            if self.enterprise_is_filtered == False:
-                for index in range(len(self.jobs_list)) :
-                    current_enterprise = self.jobs_list[index]["enterprise_name"]
-                    if current_enterprise not in self.enterprise_filter : self.enterprise_filter.append(current_enterprise)
-                self.refresh_dropdown_menu()
+            list_box.delete(0, tkinter.END)
+            for line in range(len(list)) :
+                job = list[line][list_value]
+                list_box.insert(line, str(job))
     
     def refresh_all_listbox(self, list_jobs : dict, value_creation = False) :
         if len(self.listboxs) != len(self.listboxs_value) : 
             print("error : inconsistency between number of listbox and the value displayed in it !")
         for i in range(len(self.listboxs)) :
             self.refresh_list(self.listboxs[i], list_jobs, self.listboxs_value[i], value_creation)
+        if self.enterprise_is_filtered == False:
+            for index in range(len(self.jobs_list)) :
+                current_enterprise = self.jobs_list[index]["enterprise_name"]
+                if current_enterprise not in self.enterprise_filter : self.enterprise_filter.append(current_enterprise)
+            self.refresh_dropdown_menu()
 
     def refresh_with_filter(self) :
         enterprise_selected = self.dropdown_variable
