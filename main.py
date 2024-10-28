@@ -326,9 +326,9 @@ class WindowApp :
     def refresh_with_filter(self) :
         enterprise_selected = self.dropdown_variable
         print("selected enterprise : " + str(enterprise_selected))
-        if enterprise_selected == None :
+        if enterprise_selected == "All" :
             self.enterprise_is_filtered = False
-            self.refresh_all_listbox(self.jobs_list, False)
+            self.refresh_all_listbox(self.jobs_list)
         else :
             self.enterprise_is_filtered = True
             filtered_jobs = []
@@ -344,7 +344,7 @@ class WindowApp :
         menu.delete(0, "end")
 
         # bypass the automatic affectation of OptionMenu that doesn't work for my need 
-        menu.add_command(label="", command = lambda value="" : (setattr(self, 'dropdown_variable', value), self.refresh_with_filter()))
+        menu.add_command(label="All", command = lambda value="All" : (setattr(self, 'dropdown_variable', value), self.refresh_with_filter()))
         for string in self.enterprise_filter:
             if string != "" :
                 menu.add_command(label=string,
