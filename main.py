@@ -259,26 +259,42 @@ class WindowApp :
     # allow the modification of the selected job ( ex : job application refused )
     def edit_job(self) :
         if self.job_index != None :
+            edit_window = tkinter.Tk()
+            edit_window.title("Edit job : " + str(self.selected_job))
+            # add a boolean variable for testing if we want to add a job today
+            check_button_value = tkinter.BooleanVar(edit_window)
+
             def submit_job():
                 job = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" }
                 job["job_name"] = job_name_entry.get()
                 job["enterprise_name"] = enterprise_name_entry.get()
                 job["job_status"] = job_status_entry.get()
-                if job_date_entry.get_date() != date(2000, 1, 1) :
-                    job["job_date"] = job_date_entry.get_date()
-                else : job["job_date"] = ""
+                # if the date is today ( default with DateEntry ) but not wanted -> add nothing
+                if job_date_entry.get_date() == date.today() and check_button_value == False :
+                    job["job_date"] = ""
+                else : job["job_date"] = job_date_entry.get_date() # else add the date to the job
                 job["description"] = job_description.get()
                 self.jobs_list.pop(self.job_index)
                 self.jobs_list.insert(self.job_index, job)
                 self.refresh_all_listbox(self.jobs_list)
                 edit_window.destroy()
-            edit_window = tkinter.Tk()
-            edit_window.title("Edit job : " + str(self.selected_job))
+
+            def update_date():
+                # if the checkbutton is checked -> set the date to today and gey out the DateEntry to prevent changing the date
+                if check_button_value.get() :
+                    today = date.today()
+                    job_date_entry.set_date(today)
+                    job_date_entry.config(state='disabled')
+                # else re-activate the DateEntry to modify the date as we want
+                else : 
+                    job_date_entry.config(state='enabled')
+
             tkinter.Label(edit_window, text="Job Name").grid(row=0, column=0)
             tkinter.Label(edit_window, text="Enterprise").grid(row=0, column=1)
             tkinter.Label(edit_window, text="Job Status").grid(row=0, column=2)
-            tkinter.Label(edit_window, text="Application date").grid(row=0, column=3)
-            tkinter.Label(edit_window, text="Job description").grid(row=0, column=4)
+            tkinter.Label(edit_window, text="Application date").grid(row=0, column=4)
+            tkinter.Label(edit_window, text="Job description").grid(row=0, column=5)
+            # create a local variable for accessing the current_job easily
             current_job = self.jobs_list[self.job_index]
             job_name_entry = tkinter.Entry(edit_window)
             job_name_entry.insert(0, str(current_job["job_name"]))
@@ -289,13 +305,15 @@ class WindowApp :
             job_status_entry = tkinter.Entry(edit_window)
             job_status_entry.insert(0, str(current_job["job_status"]))
             job_status_entry.grid(row=1, column=2)
-            job_date_entry = DateEntry(edit_window, year=2000, month=1, day=1)
+            # add a check button to specify if the application has been done today
+            tkinter.Checkbutton(edit_window, text="Today", variable=check_button_value, command=update_date).grid(row=1, column=3)
+            job_date_entry = DateEntry(edit_window)
             if current_job["job_date"] != "" : job_date_entry.set_date(current_job["job_date"])
-            job_date_entry.grid(row=1, column=3)
+            job_date_entry.grid(row=1, column=4)
             job_description = tkinter.Entry(edit_window)
             job_description.insert(0, str(current_job["description"]))
-            job_description.grid(row=1, column=4)
-            tkinter.Button(edit_window, text="Edit", command=submit_job).grid(row=1, column=5)
+            job_description.grid(row=1, column=5)
+            tkinter.Button(edit_window, text="Edit", command=submit_job).grid(row=1, column=6)
         else :
             messagebox.showwarning("Edit job","Select a job first !")
 
