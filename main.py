@@ -211,6 +211,11 @@ class WindowApp :
     
     # add a job on the list with all the different data
     def add_job(self) :
+        a = tkinter.Tk()
+        a.title("Add a job")
+        # add a boolean variable for testing if we want to add a job today
+        check_button_value = tkinter.BooleanVar(a)
+
         def submit_job():
             job = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" }
             job["job_name"] = job_name_entry.get()
@@ -223,24 +228,35 @@ class WindowApp :
             self.jobs_list.insert(len(self.jobs_list), job)
             self.refresh_all_listbox(self.jobs_list)
             a.destroy()
-        a = tkinter.Tk()
-        a.title("Add a job")
+
+        def update_date():
+            # if the checkbutton is checked -> set the date to today and gey out the DateEntry to prevent changing the date
+            if check_button_value.get() :
+                today = date.today()
+                job_date_entry.set_date(today)
+                job_date_entry.config(state='disabled')
+            # else re-activate the DateEntry to modify the date as we want
+            else : 
+                job_date_entry.config(state='enabled')
+        
         tkinter.Label(a, text="Job Name").grid(row=0, column=0)
         tkinter.Label(a, text="Enterprise").grid(row=0, column=1)
         tkinter.Label(a, text="Job Status").grid(row=0, column=2)
-        tkinter.Label(a, text="Application date").grid(row=0, column=3)
-        tkinter.Label(a, text="Job description").grid(row=0, column=4)
+        tkinter.Label(a, text="Application date").grid(row=0, column=4)
+        tkinter.Label(a, text="Job description").grid(row=0, column=5)
         job_name_entry = tkinter.Entry(a)
         job_name_entry.grid(row=1, column=0)
         enterprise_name_entry = tkinter.Entry(a)
         enterprise_name_entry.grid(row=1, column=1)
         job_status_entry = tkinter.Entry(a)
         job_status_entry.grid(row=1, column=2)
-        job_date_entry = DateEntry(a, year=2000, month=1, day=1)
-        job_date_entry.grid(row=1, column=3)
+        # add a check button to specify if the application has been done today
+        tkinter.Checkbutton(a, text="Today", variable=check_button_value, command=update_date).grid(row=1, column=3)
+        job_date_entry = DateEntry(a)
+        job_date_entry.grid(row=1, column=4)
         job_description = tkinter.Entry(a)
-        job_description.grid(row=1, column=4)
-        tkinter.Button(a, text="Add", command=submit_job).grid(row=1, column=5)
+        job_description.grid(row=1, column=5)
+        tkinter.Button(a, text="Add", command=submit_job).grid(row=1, column=6)
 
     # view the selected job in the listbox with detailled information
     def view_job(self) :
