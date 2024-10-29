@@ -349,7 +349,7 @@ class WindowApp :
 
     def refresh_list(self, list_box : tkinter.Listbox, list : dict, list_value : str, creation : bool) :
         if creation :
-            list_box.delete(0, len(self.jobs_list))
+            list_box.delete(0, tkinter.END)
             self.jobs_list = list
             self.enterprise_filter = []
             self.enterprise_is_filtered = False
@@ -420,8 +420,8 @@ class WindowApp :
 
                     jobs_from_file.append(job)
                     # refresh the listbox to dipslay the jobs read from the file
-                    self.refresh_all_listbox(self.jobs_list, True)
-                    self.refresh_all_listbox(jobs_from_file)
+                    self.refresh_all_listbox(jobs_from_file, True)
+                    self.refresh_all_listbox(self.jobs_list)
                 for jobs in jobs_from_file :
                     print(str(jobs))
         else :
