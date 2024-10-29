@@ -244,20 +244,23 @@ class WindowApp :
         tkinter.Label(a, text="Job Name").grid(row=0, column=0)
         tkinter.Label(a, text="Enterprise").grid(row=0, column=1)
         tkinter.Label(a, text="Job Status").grid(row=0, column=2)
-        tkinter.Label(a, text="Application date").grid(row=0, column=4)
-        tkinter.Label(a, text="Job description").grid(row=0, column=5)
+        tkinter.Label(a, text="Application date").grid(row=0, column=3)
+        tkinter.Label(a, text="Job description").grid(row=0, column=4)
         job_name_entry = tkinter.Entry(a)
-        job_name_entry.grid(row=1, column=0)
+        job_name_entry.grid(row=1, column=0, padx=5)
         enterprise_name_entry = tkinter.Entry(a)
         enterprise_name_entry.grid(row=1, column=1)
-        tkinter.OptionMenu(a, current_job_status, *self.job_status).grid(row=1, column=2)
+        tkinter.OptionMenu(a, current_job_status, *self.job_status).grid(row=1, column=2, padx=5)
+        # create a frame to center the date Label betwwen the checkbutton and the date entry
+        date_frame = tkinter.Frame(a)
         # add a check button to specify if the application has been done today
-        tkinter.Checkbutton(a, text="Today", variable=check_button_value, command=update_date).grid(row=1, column=3)
-        job_date_entry = DateEntry(a)
-        job_date_entry.grid(row=1, column=4)
+        tkinter.Checkbutton(date_frame, text="Today", variable=check_button_value, command=update_date).grid(row=0, column=0)
+        job_date_entry = DateEntry(date_frame)
+        job_date_entry.grid(row=0, column=1, padx=5)
+        date_frame.grid(row=1, column=3)
         job_description = tkinter.Entry(a)
-        job_description.grid(row=1, column=5)
-        tkinter.Button(a, text="Add", command=submit_job).grid(row=1, column=6)
+        job_description.grid(row=1, column=4)
+        tkinter.Button(a, text="Add", command=submit_job).grid(row=1, column=5, padx=5)
 
     # view the selected job in the listbox with detailled information
     def view_job(self) :
@@ -310,28 +313,36 @@ class WindowApp :
             tkinter.Label(edit_window, text="Job Name").grid(row=0, column=0)
             tkinter.Label(edit_window, text="Enterprise").grid(row=0, column=1)
             tkinter.Label(edit_window, text="Job Status").grid(row=0, column=2)
-            tkinter.Label(edit_window, text="Application date").grid(row=0, column=4)
-            tkinter.Label(edit_window, text="Job description").grid(row=0, column=5)
+            tkinter.Label(edit_window, text="Application date").grid(row=0, column=3)
+            tkinter.Label(edit_window, text="Job description").grid(row=0, column=4)
             # create a local variable for accessing the current_job easily
             current_job = self.jobs_list[self.job_index]
             job_name_entry = tkinter.Entry(edit_window)
             job_name_entry.insert(0, str(current_job["job_name"]))
-            job_name_entry.grid(row=1, column=0)
+            job_name_entry.grid(row=1, column=0, padx=5)
             enterprise_name_entry = tkinter.Entry(edit_window)
             enterprise_name_entry.insert(0, str(current_job["enterprise_name"]))
             enterprise_name_entry.grid(row=1, column=1)
-            tkinter.OptionMenu(edit_window, current_job_status, *self.job_status).grid(row=1, column=2)
+            tkinter.OptionMenu(edit_window, current_job_status, *self.job_status).grid(row=1, column=2, padx=5)
             if current_job["job_status"] != "" : current_job_status.set(current_job["job_status"])
             
+            # creating a frame to grid check button and DateEntry to the same place
+            date_frame = tkinter.Frame(edit_window)
+
             # add a check button to specify if the application has been done today
-            tkinter.Checkbutton(edit_window, text="Today", variable=check_button_value, command=update_date).grid(row=1, column=3)
-            job_date_entry = DateEntry(edit_window)
+            tkinter.Checkbutton(date_frame, text="Today", variable=check_button_value, command=update_date).grid(row=0, column=0)
+            
+            job_date_entry = DateEntry(date_frame)
             if current_job["job_date"] != "" : job_date_entry.set_date(current_job["job_date"])
-            job_date_entry.grid(row=1, column=4)
+            job_date_entry.grid(row=0, column=1, padx=5)
+
+            # grid the frame after the job status -> will center the Label above
+            date_frame.grid(row=1, column=3)
+
             job_description = tkinter.Entry(edit_window)
             job_description.insert(0, str(current_job["description"]))
-            job_description.grid(row=1, column=5)
-            tkinter.Button(edit_window, text="Edit", command=submit_job).grid(row=1, column=6)
+            job_description.grid(row=1, column=4)
+            tkinter.Button(edit_window, text="Edit", command=submit_job).grid(row=1, column=5, padx=5)
         else :
             messagebox.showwarning("Edit job","Select a job first !")
 
