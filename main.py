@@ -214,6 +214,7 @@ class WindowApp :
     def add_job(self) :
         a = tkinter.Tk()
         a.title("Add a job")
+        current_job_status = tkinter.StringVar(a)
         # add a boolean variable for testing if we want to add a job today
         check_button_value = tkinter.BooleanVar(a)
 
@@ -221,7 +222,7 @@ class WindowApp :
             job = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" }
             job["job_name"] = job_name_entry.get()
             job["enterprise_name"] = enterprise_name_entry.get()
-            job["job_status"] = job_status_entry.get()
+            job["job_status"] = current_job_status.get()
             if job_date_entry.get_date() != date(2000, 1, 1) :
                 job["job_date"] = job_date_entry.get_date()
             else : job["job_date"] = ""
@@ -249,8 +250,7 @@ class WindowApp :
         job_name_entry.grid(row=1, column=0)
         enterprise_name_entry = tkinter.Entry(a)
         enterprise_name_entry.grid(row=1, column=1)
-        job_status_entry = tkinter.Entry(a)
-        job_status_entry.grid(row=1, column=2)
+        tkinter.OptionMenu(a, current_job_status, *self.job_status).grid(row=1, column=2)
         # add a check button to specify if the application has been done today
         tkinter.Checkbutton(a, text="Today", variable=check_button_value, command=update_date).grid(row=1, column=3)
         job_date_entry = DateEntry(a)
