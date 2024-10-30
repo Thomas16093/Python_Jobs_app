@@ -29,6 +29,7 @@ class WindowApp :
     enterprise_filter = []
     dropdown_variable = None
     event_listbox = None
+    job_details = []
 
     def __init__(self, main):
         self.m = main
@@ -112,6 +113,41 @@ class WindowApp :
                 self.listboxs[index].pack(side="left", after=self.listboxs[index-1], fill="both", expand=True)
             else :
                 self.listboxs[index].pack(side="left", fill="both", expand=True)
+        
+        # create a job detail on the bottom of the main window
+        detail_frame = tkinter.Frame(self.m)
+
+        # create two frame : first contain basic info, second contain the description value wich can be a lot larger
+        detail_job_frame = tkinter.Frame(detail_frame)
+        detail_job_frame.grid(row=0, column=0)
+
+        detail_description_frame = tkinter.Frame(detail_frame)
+        detail_description_frame.grid(row=0, column=1)
+
+        # add the differents value in the frames
+        tkinter.Label(detail_job_frame, text="Job Name").grid(row=0, column=0)
+        detail_job_name = tkinter.Entry(detail_job_frame, state="readonly")
+        detail_job_name.grid(row=1, column=0)
+        self.job_details.append(detail_job_name)
+        tkinter.Label(detail_job_frame, text="Enterprise").grid(row=2, column=0)
+        detail_job_enterprise = tkinter.Entry(detail_job_frame, state="readonly")
+        detail_job_enterprise.grid(row=3, column=0)
+        self.job_details.append(detail_job_enterprise)
+        tkinter.Label(detail_job_frame, text="Status").grid(row=4, column=0)
+        detail_job_status = tkinter.Entry(detail_job_frame, state="readonly")
+        detail_job_status.grid(row=5, column=0)
+        self.job_details.append(detail_job_status)
+        tkinter.Label(detail_job_frame, text="Application date").grid(row=6, column=0)
+        detail_job_date = tkinter.Entry(detail_job_frame, state="readonly")
+        detail_job_date.grid(row=7, column=0)
+        self.job_details.append(detail_job_date)
+
+        tkinter.Label(detail_description_frame, text="Desc").grid(row=0, column=0)
+        detail_job_desc = tkinter.Text(detail_description_frame, height=7, state="disabled")
+        detail_job_desc.grid(row=1, column=0)
+        self.job_details.append(detail_job_desc)
+
+        detail_frame.pack(side="bottom", fill='both', expand=True)
 
         # finish creating scrollbar
         scrollbar.config(command=self.yview)
@@ -194,11 +230,43 @@ class WindowApp :
                         self.listboxs[i].selection_clear(0, len(self.jobs_list))
                         self.listboxs[i].selection_set(index, index)
                     else : pass
+                self.update_job_detail()
             else :
                 pass
         else:
             pass
     
+    # gather information from the selection to display each information on the bottom entry
+    def update_job_detail(self) :
+        if self.job_index != None :
+            for entry,i in zip(range(len(self.job_details)),self.jobs_list[self.job_index].keys()) :
+                if self.jobs_list[self.job_index] != None :
+                    print(str(i))
+                    if i == "description" :
+                        temp_str = str(self.jobs_list[self.job_index][i])
+                        self.job_details[entry].config(state="normal") # set entry to normal to modify the value
+                        self.job_details[entry].delete('1.0', tkinter.END)
+                        self.job_details[entry].insert('1.0', temp_str)
+                        self.job_details[entry].config(state="disabled") # re-set the entry to readonly as it should be
+                    else :
+                        temp_str = str(self.jobs_list[self.job_index][i])
+                        self.job_details[entry].config(state="normal") # set entry to normal to modify the value
+                        self.job_details[entry].delete(0, tkinter.END)
+                        self.job_details[entry].insert(0, temp_str)
+                        self.job_details[entry].config(state="readonly") # re-set the entry to readonly as it should be
+                else :
+                    if i == "description" :
+                        temp_str = str(self.jobs_list[self.job_index][i])
+                        self.job_details[entry].config(state="normal") # set entry to normal to modify the value
+                        self.job_details[entry].delete('1.0', tkinter.END)
+                        self.job_details[entry].insert('1.0', "")
+                        self.job_details[entry].config(state="disabled") # re-set the entry to readonly as it should be
+                    else :
+                        self.job_details[entry].config(state="normal") # set entry to normal to modify the value
+                        self.job_details[entry].delete(0, tkinter.END)
+                        self.job_details[entry].insert(0, "")
+                        self.job_details[entry].config(state="readonly") # re-set the entry to readonly as it should be
+     
     # pulled from a forum -> should be able to determine the screen value even on a multi monitor setup
     def get_curr_screen_geometry(self):
         root = tkinter.Tk()
