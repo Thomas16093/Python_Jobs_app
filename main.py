@@ -147,7 +147,7 @@ class WindowApp :
         detail_job_desc.grid(row=1, column=0)
         self.job_details.append(detail_job_desc)
 
-        detail_frame.pack(side="bottom", fill='both', expand=True)
+        detail_frame.pack(side="bottom")
 
         # finish creating scrollbar
         scrollbar.config(command=self.yview)
