@@ -134,7 +134,7 @@ class WindowApp :
             # set the file was not written with the extension -> add it ourselves
             if (self.filename.endswith('.csv') == False) :
                 self.filename = self.filename + str('.csv')
-            self.refresh_all_listbox([], creation=True)
+            self.refresh_all_listbox([], value_creation=True)
             n.destroy()
         n = tkinter.Tk()
         n.title("New file")
