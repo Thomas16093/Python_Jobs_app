@@ -158,7 +158,7 @@ class WindowApp :
 
     def OnMouseWheel(self, event):
         for index in range(len(self.listboxs)) :
-            self.listboxs[index].yview("scroll", event.delta, "units")
+            self.listboxs[index].yview("scroll", -event.delta, "units")
         # this prevents default bindings from firing, which
         # would end up scrolling the widget twice
         return "break"
