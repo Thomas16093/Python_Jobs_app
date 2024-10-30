@@ -335,12 +335,17 @@ class WindowApp :
         if self.job_index != None :
             view_window = tkinter.Tk()
             view_window.title("Job : " + str(self.selected_job))
-            tkinter.Label(view_window, text=self.selected_job).grid(row=0, column=0)
-            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["enterprise_name"]).grid(row=0, column=1)
-            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["job_status"]).grid(row=0, column=2)
-            tkinter.Label(view_window, text=str(self.jobs_list[self.job_index]["job_date"])).grid(row=0, column=3)
-            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["description"]).grid(row=0, column=4)
-            tkinter.Button(view_window, text="Exit", command=view_window.destroy).grid(row=1)
+            tkinter.Label(view_window, text="Job Name").grid(row=0, column=0)
+            tkinter.Label(view_window, text="Enterprise").grid(row=0, column=1)
+            tkinter.Label(view_window, text="Job Status").grid(row=0, column=2)
+            tkinter.Label(view_window, text="Application date").grid(row=0, column=3)
+            tkinter.Label(view_window, text="Job description").grid(row=0, column=4)
+            tkinter.Label(view_window, text=self.selected_job, borderwidth=2, relief="groove").grid(row=1, column=0)
+            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["enterprise_name"], borderwidth=2, relief="groove").grid(row=1, column=1)
+            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["job_status"], borderwidth=2, relief="groove").grid(row=1, column=2)
+            tkinter.Label(view_window, text=str(self.jobs_list[self.job_index]["job_date"]), borderwidth=2, relief="groove").grid(row=1, column=3)
+            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["description"], borderwidth=2, relief="groove").grid(row=1, column=4)
+            tkinter.Button(view_window, text="Exit", command=view_window.destroy).grid(row=2)
         else :
             messagebox.showwarning("View job","Select a job first !")
 
