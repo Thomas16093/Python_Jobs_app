@@ -242,30 +242,19 @@ class WindowApp :
             for entry,i in zip(range(len(self.job_details)),self.jobs_list[self.job_index].keys()) :
                 if self.jobs_list[self.job_index] != None :
                     print(str(i))
-                    if i == "description" :
-                        temp_str = str(self.jobs_list[self.job_index][i])
-                        self.job_details[entry].config(state="normal") # set entry to normal to modify the value
-                        self.job_details[entry].delete('1.0', tkinter.END)
-                        self.job_details[entry].insert('1.0', temp_str)
-                        self.job_details[entry].config(state="disabled") # re-set the entry to readonly as it should be
-                    else :
-                        temp_str = str(self.jobs_list[self.job_index][i])
-                        self.job_details[entry].config(state="normal") # set entry to normal to modify the value
-                        self.job_details[entry].delete(0, tkinter.END)
-                        self.job_details[entry].insert(0, temp_str)
-                        self.job_details[entry].config(state="readonly") # re-set the entry to readonly as it should be
+                    temp_str = str(self.jobs_list[self.job_index][i])
                 else :
-                    if i == "description" :
-                        temp_str = str(self.jobs_list[self.job_index][i])
-                        self.job_details[entry].config(state="normal") # set entry to normal to modify the value
-                        self.job_details[entry].delete('1.0', tkinter.END)
-                        self.job_details[entry].insert('1.0', "")
-                        self.job_details[entry].config(state="disabled") # re-set the entry to readonly as it should be
-                    else :
-                        self.job_details[entry].config(state="normal") # set entry to normal to modify the value
-                        self.job_details[entry].delete(0, tkinter.END)
-                        self.job_details[entry].insert(0, "")
-                        self.job_details[entry].config(state="readonly") # re-set the entry to readonly as it should be
+                    temp_str = ""
+                if i == "description" :
+                    self.job_details[entry].config(state="normal") # set text to normal to modify the value
+                    self.job_details[entry].delete('1.0', tkinter.END)
+                    self.job_details[entry].insert('1.0', temp_str)
+                    self.job_details[entry].config(state="disabled") # re-set the text to readonly as it should be
+                else :
+                    self.job_details[entry].config(state="normal") # set entry to normal to modify the value
+                    self.job_details[entry].delete(0, tkinter.END)
+                    self.job_details[entry].insert(0, temp_str)
+                    self.job_details[entry].config(state="readonly") # re-set the entry to readonly as it should be
      
     # pulled from a forum -> should be able to determine the screen value even on a multi monitor setup
     def get_curr_screen_geometry(self):
