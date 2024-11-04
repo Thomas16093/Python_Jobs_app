@@ -221,7 +221,7 @@ class WindowApp :
         with open(self.filename, "w", newline='') as save_file : 
             csv_out = csv.writer(save_file, delimiter=";", lineterminator="\n")
             for row_out in self.jobs_list :
-                job_out = [row_out["job_name"],row_out["enterprise_name"],row_out["job_status"],row_out["job_date"],row_out["description"]]
+                job_out = [row_out["job_name"],row_out["enterprise_name"],row_out["job_status"],row_out["job_date"],row_out["url"],row_out["description"]]
                 print("writing : " + str(job_out))
                 for i, entry in zip(range(len(job_out)),job_out) :
                     if entry == None :
@@ -496,11 +496,11 @@ class WindowApp :
                 reader = csv.reader(file, delimiter=";")
                 for values in reader:
                     # test if the job has all the values in the file -> if not add a blank one
-                    if len(values) < 5 : 
-                        for i in range(len(values), 5) :
+                    if len(values) < 6 : 
+                        for i in range(len(values), 6) :
                             values.append("")
                     # reference the value of the job in the correct properties
-                    job = {"job_name" : values[0], "enterprise_name" : values[1], "job_status" : values[2], "job_date" : values[3], "description" : values[4]}
+                    job = {"job_name" : values[0], "enterprise_name" : values[1], "job_status" : values[2], "job_date" : values[3], "url" : values[4] ,"description" : values[5]}
 
                     # convert string date to proper date
                     if job["job_date"] != "" :
