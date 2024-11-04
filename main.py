@@ -4,6 +4,8 @@ from tkinter import messagebox, filedialog
 from tkcalendar import DateEntry
 from datetime import date
 from pathlib import Path
+import webbrowser as web
+import validators
 
 class WindowApp :
     file = None
@@ -114,7 +116,7 @@ class WindowApp :
             else :
                 self.listboxs[index].pack(side="left", fill="both", expand=True)
         
-        # create a job detail on the bottom of the main window
+        # All Frame creation for the bottom of the main window
         detail_frame = tkinter.Frame(self.m)
 
         # create two frame : first contain basic info, second contain the description value wich can be a lot larger
@@ -123,6 +125,10 @@ class WindowApp :
 
         detail_description_frame = tkinter.Frame(detail_frame)
         detail_description_frame.grid(row=0, column=1)
+
+        # create a url frame to display the url of the job and open to the page on click
+        url_job_frame = tkinter.Frame(detail_frame)
+        url_job_frame.grid(row=1, column=0)
 
         # add the differents value in the frames
         tkinter.Label(detail_job_frame, text="Job Name").grid(row=0, column=0)
@@ -147,7 +153,13 @@ class WindowApp :
         detail_job_desc.grid(row=1, column=0)
         self.job_details.append(detail_job_desc)
 
-        detail_frame.pack(side="bottom")
+        tkinter.Label(url_job_frame, text="Url : ").grid(row=0, column=1)
+        detail_job_url = tkinter.Entry(url_job_frame, state="readonly")
+        detail_job_url.bind(sequence="<ButtonRelease-1>", func=self.OpenUrl)
+        detail_job_url.grid(row=0, column=2, columnspan=2)
+        self.job_details.append(detail_job_url)
+
+        detail_frame.pack(side=tkinter.BOTTOM, before=job_count_frame)
 
         # finish creating scrollbar
         scrollbar.config(command=self.yview)
@@ -162,6 +174,11 @@ class WindowApp :
         # this prevents default bindings from firing, which
         # would end up scrolling the widget twice
         return "break"
+    
+    def OpenUrl(self, event):
+        value = event.widget.get()
+        print(str(value))
+        if validators.url(value) : web.open_new(value)
 
     # get the name of the new file and set it in a class variable then close the window
     def create_file(self) :
@@ -276,13 +293,14 @@ class WindowApp :
         check_button_value = tkinter.BooleanVar(a)
 
         def submit_job():
-            job = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" }
+            job = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "", "url" : "" }
             job["job_name"] = job_name_entry.get()
             job["enterprise_name"] = enterprise_name_entry.get()
             job["job_status"] = current_job_status.get()
             if job_date_entry.get_date() != date(2000, 1, 1) :
                 job["job_date"] = job_date_entry.get_date()
             else : job["job_date"] = ""
+            job["url"] = job_url_entry.get() 
             job["description"] = job_description.get()
             self.jobs_list.insert(len(self.jobs_list), job)
             self.refresh_all_listbox(self.jobs_list)
@@ -302,7 +320,8 @@ class WindowApp :
         tkinter.Label(a, text="Enterprise").grid(row=0, column=1)
         tkinter.Label(a, text="Job Status").grid(row=0, column=2)
         tkinter.Label(a, text="Application date").grid(row=0, column=3)
-        tkinter.Label(a, text="Job description").grid(row=0, column=4)
+        tkinter.Label(a, text="Job url").grid(row=0, column=4)
+        tkinter.Label(a, text="Job description").grid(row=0, column=5)
         job_name_entry = tkinter.Entry(a)
         job_name_entry.grid(row=1, column=0, padx=5)
         enterprise_name_entry = tkinter.Entry(a)
@@ -315,9 +334,11 @@ class WindowApp :
         job_date_entry = DateEntry(date_frame)
         job_date_entry.grid(row=0, column=1, padx=5)
         date_frame.grid(row=1, column=3)
+        job_url_entry = tkinter.Entry(a)
+        job_url_entry.grid(row=1, column=4)
         job_description = tkinter.Entry(a)
-        job_description.grid(row=1, column=4)
-        tkinter.Button(a, text="Add", command=submit_job).grid(row=1, column=5, padx=5)
+        job_description.grid(row=1, column=5, padx=4)
+        tkinter.Button(a, text="Add", command=submit_job).grid(row=1, column=6, padx=2)
 
     # view the selected job in the listbox with detailled information
     def view_job(self) :
@@ -348,7 +369,7 @@ class WindowApp :
             check_button_value = tkinter.BooleanVar(edit_window)
 
             def submit_job():
-                job = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" }
+                job = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "url" : "", "description" : "" }
                 job["job_name"] = job_name_entry.get()
                 job["enterprise_name"] = enterprise_name_entry.get()
                 job["job_status"] = current_job_status.get()
@@ -356,6 +377,7 @@ class WindowApp :
                 if job_date_entry.get_date() == date.today() and check_button_value == False :
                     job["job_date"] = ""
                 else : job["job_date"] = job_date_entry.get_date() # else add the date to the job
+                job["url"] = job_url_entry.get()
                 job["description"] = job_description.get()
                 self.jobs_list.pop(self.job_index)
                 self.jobs_list.insert(self.job_index, job)
@@ -376,7 +398,8 @@ class WindowApp :
             tkinter.Label(edit_window, text="Enterprise").grid(row=0, column=1)
             tkinter.Label(edit_window, text="Job Status").grid(row=0, column=2)
             tkinter.Label(edit_window, text="Application date").grid(row=0, column=3)
-            tkinter.Label(edit_window, text="Job description").grid(row=0, column=4)
+            tkinter.Label(edit_window, text="Job url").grid(row=0, column=4)
+            tkinter.Label(edit_window, text="Job description").grid(row=0, column=5)
             # create a local variable for accessing the current_job easily
             current_job = self.jobs_list[self.job_index]
             job_name_entry = tkinter.Entry(edit_window)
@@ -401,10 +424,14 @@ class WindowApp :
             # grid the frame after the job status -> will center the Label above
             date_frame.grid(row=1, column=3)
 
+            job_url_entry = tkinter.Entry(edit_window)
+            job_url_entry.insert(0, str(current_job["url"]))
+            job_url_entry.grid(row=1, column=4)
+
             job_description = tkinter.Entry(edit_window)
             job_description.insert(0, str(current_job["description"]))
-            job_description.grid(row=1, column=4)
-            tkinter.Button(edit_window, text="Edit", command=submit_job).grid(row=1, column=5, padx=5)
+            job_description.grid(row=1, column=5, padx=4)
+            tkinter.Button(edit_window, text="Edit", command=submit_job).grid(row=1, column=6, padx=2)
         else :
             messagebox.showwarning("Edit job","Select a job first !")
 
