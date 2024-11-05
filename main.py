@@ -12,17 +12,7 @@ class WindowApp :
     filename = ""
     selected_job = ""
     job_index = None
-    jobs_list = [{"job_name" : "Jobs 1", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
-                {"job_name" : "Jobs 2", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
-                {"job_name" : "Jobs 3", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
-                {"job_name" : "Jobs 4", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
-                {"job_name" : "Jobs 5", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
-                {"job_name" : "Jobs 6", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
-                {"job_name" : "Jobs 7", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
-                {"job_name" : "Jobs 8", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
-                {"job_name" : "Jobs 9", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
-                {"job_name" : "Jobs 10", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" },
-                {"job_name" : "Jobs 11", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "" }]
+    job_template = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "url" : "", "description" : "" }
     job_status = [ "", "On going", "Refused", "Approved"]
     listboxs = []
     listboxs_value = []
@@ -298,7 +288,7 @@ class WindowApp :
         check_button_value = tkinter.BooleanVar(a)
 
         def submit_job():
-            job = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "description" : "", "url" : "" }
+            job = self.job_template.copy()
             job["job_name"] = job_name_entry.get()
             job["enterprise_name"] = enterprise_name_entry.get()
             job["job_status"] = current_job_status.get()
@@ -376,7 +366,7 @@ class WindowApp :
             check_button_value = tkinter.BooleanVar(edit_window)
 
             def submit_job():
-                job = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "url" : "", "description" : "" }
+                job = self.job_template.copy()
                 job["job_name"] = job_name_entry.get()
                 job["enterprise_name"] = enterprise_name_entry.get()
                 job["job_status"] = current_job_status.get()
@@ -512,7 +502,12 @@ class WindowApp :
                         for i in range(len(values), 6) :
                             values.append("")
                     # reference the value of the job in the correct properties
-                    job = {"job_name" : values[0], "enterprise_name" : values[1], "job_status" : values[2], "job_date" : values[3], "url" : values[4] ,"description" : values[5]}
+                    #job = {"job_name" : values[0], "enterprise_name" : values[1], "job_status" : values[2], "job_date" : values[3], "url" : values[4] ,"description" : values[5]}
+                    job = self.job_template.copy()
+                    i = 0
+                    for key in job.keys() :
+                        job[key] = values[i]
+                        i+=1
 
                     # convert string date to proper date
                     if job["job_date"] != "" :
