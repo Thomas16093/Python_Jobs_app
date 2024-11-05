@@ -29,6 +29,7 @@ class WindowApp :
     dropdown_menu = tkinter.OptionMenu
     enterprise_is_filtered = False
     enterprise_filter = []
+    current_job_list = jobs_list
     dropdown_variable = None
     event_listbox = None
     job_details = []
@@ -231,15 +232,19 @@ class WindowApp :
 
     # binded with the listbox to get the line in the list and use it on the rest of the app
     def on_select(self, event) :
+        # get the correct index of the value when we edit a filtered version --> modify the correct job in the global list
+        def find_index(data) :
+            for index, job in enumerate(self.jobs_list) : 
+                if job["job_name"] == data : return index
         selection = event.widget.curselection()
         if selection:
             if selection[0] != self.job_index :
                 index = selection[0]
-                data = self.jobs_list[index]["job_name"]
+                data = self.current_job_list[index]["job_name"]
                 #data = event.widget.get(index)
                 self.event_listbox = event.widget
                 self.selected_job = data
-                self.job_index = index
+                self.job_index = find_index(data)
                 # allow multi selection
                 # will select the same job in each row help visualize each value of a job
                 for i in range(len(self.listboxs)) :
@@ -303,7 +308,9 @@ class WindowApp :
             job["url"] = job_url_entry.get() 
             job["description"] = job_description.get()
             self.jobs_list.insert(len(self.jobs_list), job)
-            self.refresh_all_listbox(self.jobs_list)
+            # refresh with the current list and not the global one
+            # --> avoid getting back to all job with the filter value set to True
+            self.refresh_all_listbox(self.current_job_list)
             a.destroy()
 
         def update_date():
@@ -381,7 +388,9 @@ class WindowApp :
                 job["description"] = job_description.get()
                 self.jobs_list.pop(self.job_index)
                 self.jobs_list.insert(self.job_index, job)
-                self.refresh_all_listbox(self.jobs_list)
+                # refresh with the current list and not the global one
+                # --> avoid getting back to all job with the filter value set to True
+                self.refresh_all_listbox(self.current_job_list) 
                 edit_window.destroy()
 
             def update_date():
@@ -440,6 +449,7 @@ class WindowApp :
         if creation :
             list_box.delete(0, tkinter.END)
             self.jobs_list = list
+            self.current_job_list = list
             self.enterprise_filter = []
             self.enterprise_is_filtered = False
         else :
@@ -464,15 +474,17 @@ class WindowApp :
         print("selected enterprise : " + str(enterprise_selected))
         if enterprise_selected == "All" :
             self.enterprise_is_filtered = False
+            self.current_job_list = self.jobs_list # get the global list when not in a filtered mode
             self.refresh_all_listbox(self.jobs_list)
         else :
             self.enterprise_is_filtered = True
-            filtered_jobs = []
+            self.current_job_list = [] # before adding jobs, set the list to nothing
             for job in self.jobs_list :
                 if job["enterprise_name"] == enterprise_selected :
-                    filtered_jobs.append(job)
+                    # append only the job matching the enterprise selected
+                    self.current_job_list.append(job)
                 else : pass
-            self.refresh_all_listbox(filtered_jobs)
+            self.refresh_all_listbox(self.current_job_list)
 
     def refresh_dropdown_menu(self) :
         menu = tkinter.OptionMenu
