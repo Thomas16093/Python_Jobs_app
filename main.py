@@ -257,7 +257,8 @@ class WindowApp :
                     temp_str = str(self.jobs_list[self.job_index][i])
                 else :
                     temp_str = ""
-                if i == "description" :
+                entry_type = type(self.job_details[entry])
+                if entry_type == tkinter.Text :
                     self.job_details[entry].config(state="normal") # set text to normal to modify the value
                     self.job_details[entry].delete('1.0', tkinter.END)
                     self.job_details[entry].insert('1.0', temp_str)
