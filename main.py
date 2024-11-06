@@ -171,23 +171,6 @@ class WindowApp :
         # test if the url is correct before trying to open it
         if validators.url(value) : web.open_new(value)
 
-    # get the name of the new file and set it in a class variable then close the window
-    def create_file(self) :
-        def return_name(): 
-            self.filename = entry.get()
-            # set the file was not written with the extension -> add it ourselves
-            if (self.filename.endswith('.csv') == False) :
-                self.filename = self.filename + str('.csv')
-            self.refresh_all_listbox([], value_creation=True)
-            n.destroy()
-        n = tkinter.Tk()
-        n.title("New file")
-        tkinter.Label(n, text="File name : ").grid(row=0)
-        entry = tkinter.Entry(n)
-        entry.grid(row=0, column=1)
-        submit_button = tkinter.Button(n, text="Submit", command=return_name)
-        submit_button.grid(row=1)
-
     # binded with the listbox to get the line in the list and use it on the rest of the app
     def on_select(self, event) :
         # get the correct index of the value when we edit a filtered version --> modify the correct job in the global list
@@ -461,6 +444,23 @@ class WindowApp :
                 menu.add_command(label=string,
                             command = lambda value=string: (setattr(self, 'dropdown_variable', value), self.refresh_with_filter())) 
             else : pass
+
+    # get the name of the new file and set it in a class variable then close the window
+    def create_file(self) :
+        def return_name(): 
+            self.filename = entry.get()
+            # set the file was not written with the extension -> add it ourselves
+            if (self.filename.endswith('.csv') == False) :
+                self.filename = self.filename + str('.csv')
+            self.refresh_all_listbox([], value_creation=True)
+            n.destroy()
+        n = tkinter.Tk()
+        n.title("New file")
+        tkinter.Label(n, text="File name : ").grid(row=0)
+        entry = tkinter.Entry(n)
+        entry.grid(row=0, column=1)
+        submit_button = tkinter.Button(n, text="Submit", command=return_name)
+        submit_button.grid(row=1)
 
     # get the path to the file, set it in a class variable to be used in the main app
     def select_file(self) :
