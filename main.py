@@ -188,38 +188,6 @@ class WindowApp :
         submit_button = tkinter.Button(n, text="Submit", command=return_name)
         submit_button.grid(row=1)
 
-    # get the path to the file, set it in a class variable to be used in the main app
-    def select_file(self) :
-        filetype = (
-            ('excel files', '*.csv'),
-            ('All files', '*.*')
-        )
-
-        filename = filedialog.askopenfilename(
-            title="Open a file",
-            initialdir=Path.cwd(), # Use Path to get current working directory
-            filetypes=filetype
-        )
-
-        # check if a file was select before calling the file loader
-        if filename != "" :
-            self.filename = filename
-            self.load_list_from_file(self.filename)
-    
-    # write into a csv file the modified data to keep them between use
-    def save_file(self) :
-        # to change with the dump of the data in the csv
-        with open(self.filename, "w", newline='') as save_file : 
-            csv_out = csv.writer(save_file, delimiter=";", lineterminator="\n")
-            for row_out in self.jobs_list :
-                job_out = [row_out["job_name"],row_out["enterprise_name"],row_out["job_status"],row_out["job_date"],row_out["url"],row_out["description"]]
-                print("writing : " + str(job_out))
-                for i, entry in zip(range(len(job_out)),job_out) :
-                    if entry == None :
-                        job_out[i] = ""
-                csv_out.writerow(job_out)
-        print(str(self.filename))
-
     # binded with the listbox to get the line in the list and use it on the rest of the app
     def on_select(self, event) :
         # get the correct index of the value when we edit a filtered version --> modify the correct job in the global list
@@ -493,6 +461,38 @@ class WindowApp :
                 menu.add_command(label=string,
                             command = lambda value=string: (setattr(self, 'dropdown_variable', value), self.refresh_with_filter())) 
             else : pass
+
+    # get the path to the file, set it in a class variable to be used in the main app
+    def select_file(self) :
+        filetype = (
+            ('excel files', '*.csv'),
+            ('All files', '*.*')
+        )
+
+        filename = filedialog.askopenfilename(
+            title="Open a file",
+            initialdir=Path.cwd(), # Use Path to get current working directory
+            filetypes=filetype
+        )
+
+        # check if a file was select before calling the file loader
+        if filename != "" :
+            self.filename = filename
+            self.load_list_from_file(self.filename)
+    
+    # write into a csv file the modified data to keep them between use
+    def save_file(self) :
+        # to change with the dump of the data in the csv
+        with open(self.filename, "w", newline='') as save_file : 
+            csv_out = csv.writer(save_file, delimiter=";", lineterminator="\n")
+            for row_out in self.jobs_list :
+                job_out = [row_out["job_name"],row_out["enterprise_name"],row_out["job_status"],row_out["job_date"],row_out["url"],row_out["description"]]
+                print("writing : " + str(job_out))
+                for i, entry in zip(range(len(job_out)),job_out) :
+                    if entry == None :
+                        job_out[i] = ""
+                csv_out.writerow(job_out)
+        print(str(self.filename))
 
     # load the file selected from the file picker
     def load_list_from_file(self, path_to_file):
