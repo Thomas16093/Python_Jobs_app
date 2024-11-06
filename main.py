@@ -197,7 +197,7 @@ class WindowApp :
 
         filename = filedialog.askopenfilename(
             title="Open a file",
-            initialdir='/', # modify to execution directory
+            initialdir=Path.cwd(), # Use Path to get current working directory
             filetypes=filetype
         )
 
