@@ -168,7 +168,7 @@ class WindowApp :
     
     def OpenUrl(self, event):
         value = event.widget.get()
-        print(str(value))
+        # test if the url is correct before trying to open it
         if validators.url(value) : web.open_new(value)
 
     # get the name of the new file and set it in a class variable then close the window
@@ -251,13 +251,17 @@ class WindowApp :
     # gather information from the selection to display each information on the bottom entry
     def update_job_detail(self) :
         if self.job_index != None :
+            # get each field that will display an info and each key for the job to get the value needed
             for entry,i in zip(range(len(self.job_details)),self.jobs_list[self.job_index].keys()) :
+                # check if a value is given, if not a blank value is set
                 if self.jobs_list[self.job_index] != None :
                     print(str(i))
                     temp_str = str(self.jobs_list[self.job_index][i])
                 else :
                     temp_str = ""
+                # get the type of the field to check if it's a Text or an Entry
                 entry_type = type(self.job_details[entry])
+                # if the field is a Text and not an Entry -> change the way to delete and insert the value
                 if entry_type == tkinter.Text :
                     self.job_details[entry].config(state="normal") # set text to normal to modify the value
                     self.job_details[entry].delete('1.0', tkinter.END)
@@ -367,7 +371,7 @@ class WindowApp :
             check_button_value = tkinter.BooleanVar(edit_window)
 
             def submit_job():
-                job = self.job_template.copy()
+                job = self.job_template.copy() # get current job template to populate with the new values
                 job["job_name"] = job_name_entry.get()
                 job["enterprise_name"] = enterprise_name_entry.get()
                 job["job_status"] = current_job_status.get()
@@ -385,7 +389,7 @@ class WindowApp :
                 edit_window.destroy()
 
             def update_date():
-                # if the checkbutton is checked -> set the date to today and gey out the DateEntry to prevent changing the date
+                # if the checkbutton is checked -> set the date to today and grey out the DateEntry to prevent changing the date
                 if check_button_value.get() :
                     today = date.today()
                     job_date_entry.set_date(today)
@@ -462,7 +466,7 @@ class WindowApp :
 
     def refresh_with_filter(self) :
         enterprise_selected = self.dropdown_variable
-        print("selected enterprise : " + str(enterprise_selected))
+        # check if we have selected an enterprise or we want to display all of them
         if enterprise_selected == "All" :
             self.enterprise_is_filtered = False
             self.current_job_list = self.jobs_list # get the global list when not in a filtered mode
