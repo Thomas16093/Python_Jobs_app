@@ -118,8 +118,7 @@ class WindowApp :
         detail_description_frame.grid(row=0, column=1)
 
         # create a url frame to display the url of the job and open to the page on click
-        url_job_frame = tkinter.Frame(detail_frame)
-        url_job_frame.grid(row=1, column=0)
+        url_job_frame = tkinter.Frame(self.m)
 
         # add the differents value in the frames
         tkinter.Label(detail_job_frame, text="Job Name").grid(row=0, column=0)
@@ -138,19 +137,20 @@ class WindowApp :
         detail_job_date = tkinter.Entry(detail_job_frame, state="readonly")
         detail_job_date.grid(row=7, column=0)
         self.job_details.append(detail_job_date)
+        
+        tkinter.Label(url_job_frame, text="Url : ").grid(row=0, column=0)
+        detail_job_url = tkinter.Text(url_job_frame, height=1, state="disabled")
+        detail_job_url.bind(sequence="<ButtonRelease-1>", func=self.OpenUrl)
+        detail_job_url.grid(row=0, column=1)
+        self.job_details.append(detail_job_url)
 
         tkinter.Label(detail_description_frame, text="Desc").grid(row=0, column=0)
         detail_job_desc = tkinter.Text(detail_description_frame, height=7, state="disabled")
         detail_job_desc.grid(row=1, column=0)
         self.job_details.append(detail_job_desc)
 
-        tkinter.Label(url_job_frame, text="Url : ").grid(row=0, column=1)
-        detail_job_url = tkinter.Entry(url_job_frame, state="readonly")
-        detail_job_url.bind(sequence="<ButtonRelease-1>", func=self.OpenUrl)
-        detail_job_url.grid(row=0, column=2, columnspan=2)
-        self.job_details.append(detail_job_url)
-
         detail_frame.pack(side=tkinter.BOTTOM, before=job_count_frame)
+        url_job_frame.pack(side=tkinter.BOTTOM, before=detail_frame, pady=5)
 
         # finish creating scrollbar
         scrollbar.config(command=self.yview)
@@ -166,8 +166,8 @@ class WindowApp :
         # would end up scrolling the widget twice
         return "break"
     
-    def OpenUrl(self, event):
-        value = event.widget.get()
+    def OpenUrl(self, event) :
+        value = event.widget.get('1.0', 'end-1c')
         # test if the url is correct before trying to open it
         if validators.url(value) : web.open_new(value)
 
