@@ -13,7 +13,10 @@ class WindowApp :
     selected_job = ""
     job_index = None
     job_template = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "url" : "", "description" : "" }
+    jobs_list = []
     job_status = [ "", "On going", "Refused", "Approved"]
+    jobs_timeout = []
+    timeout_details_label = None
     listboxs = []
     listboxs_value = []
     dropdown_menu = tkinter.OptionMenu
@@ -149,6 +152,8 @@ class WindowApp :
         detail_job_desc.grid(row=1, column=0)
         self.job_details.append(detail_job_desc)
 
+        self.timeout_details_label = tkinter.Label(detail_description_frame, text="Timeout has exceeded consider editing this job")
+
         detail_frame.pack(side=tkinter.BOTTOM, before=job_count_frame)
         url_job_frame.pack(side=tkinter.BOTTOM, before=detail_frame, pady=5)
 
@@ -170,6 +175,13 @@ class WindowApp :
         value = event.widget.get('1.0', 'end-1c')
         # test if the url is correct before trying to open it
         if validators.url(value) : web.open_new(value)
+
+    # check if the timeout given by the enterprise is expired 
+    # -> the enterprise consider this application refused
+    def CheckTimeOut(self, job_date : date, job_timeout) :
+        diff = date.today() - job_date
+        if diff.days > job_timeout : return True
+        return False
 
     # binded with the listbox to get the line in the list and use it on the rest of the app
     def on_select(self, event) :
@@ -202,6 +214,7 @@ class WindowApp :
     # gather information from the selection to display each information on the bottom entry
     def update_job_detail(self) :
         if self.job_index != None :
+            text_entry = None
             # get each field that will display an info and each key for the job to get the value needed
             for entry,i in zip(range(len(self.job_details)),self.jobs_list[self.job_index].keys()) :
                 # check if a value is given, if not a blank value is set
@@ -214,6 +227,7 @@ class WindowApp :
                 entry_type = type(self.job_details[entry])
                 # if the field is a Text and not an Entry -> change the way to delete and insert the value
                 if entry_type == tkinter.Text :
+                    text_entry = entry
                     self.job_details[entry].config(state="normal") # set text to normal to modify the value
                     self.job_details[entry].delete('1.0', tkinter.END)
                     self.job_details[entry].insert('1.0', temp_str)
@@ -223,6 +237,15 @@ class WindowApp :
                     self.job_details[entry].delete(0, tkinter.END)
                     self.job_details[entry].insert(0, temp_str)
                     self.job_details[entry].config(state="readonly") # re-set the entry to readonly as it should be
+            if self.jobs_list[self.job_index]["job_date"] != "" :
+                if self.CheckTimeOut(self.jobs_list[self.job_index]["job_date"], self.jobs_timeout[self.job_index]) :
+                    if self.jobs_list[self.job_index]["job_status"] != "Refused" :
+                        self.job_details[text_entry].config(height=6)
+                        self.timeout_details_label.grid(row=2, column=0)
+            else :
+                self.timeout_details_label.grid_forget()
+                self.job_details[text_entry].config(height=7)
+                
      
     # pulled from a forum -> should be able to determine the screen value even on a multi monitor setup
     def get_curr_screen_geometry(self):
@@ -242,6 +265,9 @@ class WindowApp :
         current_job_status = tkinter.StringVar(a)
         # add a boolean variable for testing if we want to add a job today
         check_button_value = tkinter.BooleanVar(a)
+        timeout_button_value = tkinter.BooleanVar(a)
+        timeout_label = tkinter.Label(a, text="days", width=4)
+        timeout_entry = tkinter.Entry(a, justify=tkinter.RIGHT)
 
         def submit_job():
             job = self.job_template.copy()
@@ -253,6 +279,9 @@ class WindowApp :
             else : job["job_date"] = ""
             job["url"] = job_url_entry.get() 
             job["description"] = job_description.get()
+            if timeout_button_value.get() : 
+                if validate_timeout_value() :
+                    self.jobs_timeout.append(int(timeout_entry.get()))
             self.jobs_list.insert(len(self.jobs_list), job)
             # refresh with the current list and not the global one
             # --> avoid getting back to all job with the filter value set to True
@@ -268,6 +297,23 @@ class WindowApp :
             # else re-activate the DateEntry to modify the date as we want
             else : 
                 job_date_entry.config(state='enabled')
+
+        def update_timeout():
+            if timeout_button_value.get() :
+                timeout_label.grid(row=2, column=2, sticky="w")
+                timeout_entry.grid(row=2, column=1)
+            else :
+                timeout_label.grid_forget()
+                timeout_entry.grid_forget()
+
+        def validate_timeout_value():
+            input_data = timeout_entry.get()
+            if input_data:
+                try:
+                    float(input_data)
+                    return True
+                except ValueError:
+                    return False
         
         tkinter.Label(a, text="Job Name").grid(row=0, column=0)
         tkinter.Label(a, text="Enterprise").grid(row=0, column=1)
@@ -291,6 +337,7 @@ class WindowApp :
         job_url_entry.grid(row=1, column=4)
         job_description = tkinter.Entry(a)
         job_description.grid(row=1, column=5, padx=4)
+        tkinter.Checkbutton(a, text="Add timeout", variable=timeout_button_value, command=update_timeout).grid(row=2, column=0)
         tkinter.Button(a, text="Add", command=submit_job).grid(row=1, column=6, padx=2)
 
     # view the selected job in the listbox with detailled information
@@ -308,7 +355,8 @@ class WindowApp :
             tkinter.Label(view_window, text=self.jobs_list[self.job_index]["job_status"], borderwidth=2, relief="groove").grid(row=1, column=2)
             tkinter.Label(view_window, text=str(self.jobs_list[self.job_index]["job_date"]), borderwidth=2, relief="groove").grid(row=1, column=3)
             tkinter.Label(view_window, text=self.jobs_list[self.job_index]["description"], borderwidth=2, relief="groove").grid(row=1, column=4)
-            tkinter.Button(view_window, text="Exit", command=view_window.destroy).grid(row=2)
+            if self.jobs_timeout[self.job_index] != None : tkinter.Label(view_window, text=self.jobs_timeout[self.job_index], borderwidth=2, relief="groove").grid(row=2, column=0)
+            tkinter.Button(view_window, text="Exit", command=view_window.destroy).grid(row=2, column=4)
         else :
             messagebox.showwarning("View job","Select a job first !")
 
@@ -320,6 +368,7 @@ class WindowApp :
             current_job_status = tkinter.StringVar(edit_window)
             # add a boolean variable for testing if we want to add a job today
             check_button_value = tkinter.BooleanVar(edit_window)
+            check_change_value = tkinter.BooleanVar(edit_window)
 
             def submit_job():
                 job = self.job_template.copy() # get current job template to populate with the new values
@@ -348,6 +397,10 @@ class WindowApp :
                 # else re-activate the DateEntry to modify the date as we want
                 else : 
                     job_date_entry.config(state='enabled')
+            
+            def change_status():
+                if check_change_value.get() :
+                    current_job_status.set(self.job_status[2])
 
             tkinter.Label(edit_window, text="Job Name").grid(row=0, column=0)
             tkinter.Label(edit_window, text="Enterprise").grid(row=0, column=1)
@@ -387,6 +440,17 @@ class WindowApp :
             job_description.insert(0, str(current_job["description"]))
             job_description.grid(row=1, column=5, padx=4)
             tkinter.Button(edit_window, text="Edit", command=submit_job).grid(row=1, column=6, padx=2)
+
+            if self.jobs_timeout[self.job_index] != None :
+                if current_job["job_date"] != "" :
+                    timed_out = self.CheckTimeOut(current_job["job_date"], self.jobs_timeout[self.job_index])
+                    if timed_out :
+                        tkinter.Checkbutton(edit_window, 
+                            text="Timeout exceeded change job to refused ? ", 
+                            variable=check_change_value, 
+                            command=change_status).grid(row=2, column=0, columnspan=2)
+                else :
+                    tkinter.Label(edit_window, text="A timeout has been set but not an application date").grid(row=2, column=0, columnspan=3)
         else :
             messagebox.showwarning("Edit job","Select a job first !")
 
@@ -513,6 +577,10 @@ class WindowApp :
                     for key in job.keys() :
                         job[key] = values[i]
                         i+=1
+
+                    if values[i] == '' : timeout = None
+                    else : timeout = int(values[i])
+                    self.jobs_timeout.append(timeout)
 
                     # convert string date to proper date
                     if job["job_date"] != "" :
