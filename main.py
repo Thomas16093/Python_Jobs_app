@@ -111,6 +111,19 @@ class WindowApp :
                 self.listboxs[index].pack(side="left", fill="both", expand=True)
         
         # All Frame creation for the bottom of the main window
+
+        # create a frame to place a job count on the bottom right
+        job_count_frame = tkinter.Frame(self.m)
+
+        self.job_count = tkinter.StringVar(job_count_frame, value=len(self.jobs_list))
+        # create them in inverse order because the pack manager place the first RIGHT to the rightmost of the window
+        # the others follow and stick to the precedent
+        tkinter.Entry(job_count_frame, textvariable=self.job_count, width=5, state="readonly").pack(side=tkinter.RIGHT, padx=5)
+        tkinter.Label(job_count_frame, text="Job Count : ").pack(side=tkinter.RIGHT)
+
+        job_count_frame.pack(side=tkinter.RIGHT)
+
+        # create a job detail frame
         detail_frame = tkinter.Frame(self.m)
 
         # create two frame : first contain basic info, second contain the description value wich can be a lot larger
@@ -472,8 +485,11 @@ class WindowApp :
             print("error : inconsistency between number of listbox and the value displayed in it !")
         for i in range(len(self.listboxs)) :
             self.refresh_list(self.listboxs[i], list_jobs, self.listboxs_value[i], value_creation)
-        if self.enterprise_is_filtered == False:
-            for index in range(len(self.jobs_list)) :
+        # get the new number of job for the current list 
+        number_of_jobs = len(self.current_job_list)
+        if self.job_count != None : self.job_count.set(str(number_of_jobs)) # test if not None to avoid a crash at program init
+        if self.enterprise_is_filtered == False and number_of_jobs > 0:
+            for index in range(number_of_jobs) :
                 current_enterprise = self.jobs_list[index]["enterprise_name"]
                 if current_enterprise not in self.enterprise_filter : self.enterprise_filter.append(current_enterprise)
             self.refresh_dropdown_menu()
@@ -565,8 +581,9 @@ class WindowApp :
                 reader = csv.reader(file, delimiter=";")
                 for values in reader:
                     # test if the job has all the values in the file -> if not add a blank one
-                    if len(values) < 6 : 
-                        for i in range(len(values), 6) :
+                    value_quantity = len(self.job_template) + 1
+                    if len(values) < value_quantity : 
+                        for i in range(len(values), value_quantity) :
                             values.append("")
                     # reference the value of the job in the correct properties
                     #job = {"job_name" : values[0], "enterprise_name" : values[1], "job_status" : values[2], "job_date" : values[3], "url" : values[4] ,"description" : values[5]}
