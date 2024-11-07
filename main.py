@@ -219,7 +219,6 @@ class WindowApp :
             for entry,i in zip(range(len(self.job_details)),self.jobs_list[self.job_index].keys()) :
                 # check if a value is given, if not a blank value is set
                 if self.jobs_list[self.job_index] != None :
-                    print(str(i))
                     temp_str = str(self.jobs_list[self.job_index][i])
                 else :
                     temp_str = ""
@@ -556,7 +555,6 @@ class WindowApp :
                     if entry == None :
                         job_out[i] = ""
                 csv_out.writerow(job_out)
-        print(str(self.filename))
 
     # load the file selected from the file picker
     def load_list_from_file(self, path_to_file):
