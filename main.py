@@ -177,7 +177,7 @@ class WindowApp :
         for index in range(len(self.listboxs)) :
             self.listboxs[index].yview(*args)
 
-    def OnMouseWheel(self, event):
+    def OnMouseWheel(self, event) :
         for index in range(len(self.listboxs)) :
             self.listboxs[index].yview("scroll", -event.delta, "units")
         # this prevents default bindings from firing, which
@@ -260,7 +260,7 @@ class WindowApp :
                 
      
     # pulled from a forum -> should be able to determine the screen value even on a multi monitor setup
-    def get_curr_screen_geometry(self):
+    def get_curr_screen_geometry(self) :
         root = tkinter.Tk()
         root.update_idletasks()
         root.attributes('-fullscreen', True)
@@ -573,7 +573,7 @@ class WindowApp :
                 csv_out.writerow(job_out)
 
     # load the file selected from the file picker
-    def load_list_from_file(self, path_to_file):
+    def load_list_from_file(self, path_to_file) :
         if Path(path_to_file).is_file() :
             # open the file and load jobs into a list to send it in refresh_list
             jobs_from_file = []
