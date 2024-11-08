@@ -25,6 +25,7 @@ class WindowApp :
     current_job_list = jobs_list
     dropdown_variable = None
     event_listbox = None
+    job_count = None
     job_details = []
 
     def __init__(self, main):
@@ -281,7 +282,7 @@ class WindowApp :
         timeout_label = tkinter.Label(add_window, text="days", width=4)
         timeout_entry = tkinter.Entry(add_window, justify=tkinter.RIGHT)
 
-        def submit_job():
+        def submit_job() :
             job = self.job_template.copy()
             job["job_name"] = job_name_entry.get()
             job["enterprise_name"] = enterprise_name_entry.get()
@@ -310,7 +311,7 @@ class WindowApp :
             else : 
                 job_date_entry.config(state='enabled')
 
-        def update_timeout():
+        def update_timeout() :
             if timeout_button_value.get() :
                 timeout_label.grid(row=2, column=2, sticky="w")
                 timeout_entry.grid(row=2, column=1)
@@ -318,7 +319,7 @@ class WindowApp :
                 timeout_label.grid_forget()
                 timeout_entry.grid_forget()
 
-        def validate_timeout_value():
+        def validate_timeout_value() :
             input_data = timeout_entry.get()
             if input_data:
                 try:
@@ -382,7 +383,7 @@ class WindowApp :
             check_button_value = tkinter.BooleanVar(edit_window)
             check_change_value = tkinter.BooleanVar(edit_window)
 
-            def submit_job():
+            def submit_job() :
                 job = self.job_template.copy() # get current job template to populate with the new values
                 job["job_name"] = job_name_entry.get()
                 job["enterprise_name"] = enterprise_name_entry.get()
@@ -400,7 +401,7 @@ class WindowApp :
                 self.refresh_all_listbox(self.current_job_list) 
                 edit_window.destroy()
 
-            def update_date():
+            def update_date() :
                 # if the checkbutton is checked -> set the date to today and grey out the DateEntry to prevent changing the date
                 if check_button_value.get() :
                     today = date.today()
@@ -410,7 +411,7 @@ class WindowApp :
                 else : 
                     job_date_entry.config(state='enabled')
             
-            def change_status():
+            def change_status() :
                 if check_change_value.get() :
                     current_job_status.set(self.job_status[2])
 
@@ -526,7 +527,7 @@ class WindowApp :
 
     # get the name of the new file and set it in a class variable then close the window
     def create_file(self) :
-        def return_name(): 
+        def return_name() : 
             self.filename = entry.get()
             # set the file was not written with the extension -> add it ourselves
             if (self.filename.endswith('.csv') == False) :
