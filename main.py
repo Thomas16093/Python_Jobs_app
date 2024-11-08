@@ -272,14 +272,14 @@ class WindowApp :
     
     # add a job on the list with all the different data
     def add_job(self) :
-        a = tkinter.Tk()
-        a.title("Add a job")
-        current_job_status = tkinter.StringVar(a)
+        add_window = tkinter.Tk()
+        add_window.title("Add a job")
+        current_job_status = tkinter.StringVar(add_window)
         # add a boolean variable for testing if we want to add a job today
-        check_button_value = tkinter.BooleanVar(a)
-        timeout_button_value = tkinter.BooleanVar(a)
-        timeout_label = tkinter.Label(a, text="days", width=4)
-        timeout_entry = tkinter.Entry(a, justify=tkinter.RIGHT)
+        check_button_value = tkinter.BooleanVar(add_window)
+        timeout_button_value = tkinter.BooleanVar(add_window)
+        timeout_label = tkinter.Label(add_window, text="days", width=4)
+        timeout_entry = tkinter.Entry(add_window, justify=tkinter.RIGHT)
 
         def submit_job():
             job = self.job_template.copy()
@@ -298,9 +298,9 @@ class WindowApp :
             # refresh with the current list and not the global one
             # --> avoid getting back to all job with the filter value set to True
             self.refresh_all_listbox(self.current_job_list)
-            a.destroy()
+            add_window.destroy()
 
-        def update_date():
+        def update_date() :
             # if the checkbutton is checked -> set the date to today and gey out the DateEntry to prevent changing the date
             if check_button_value.get() :
                 today = date.today()
@@ -327,30 +327,30 @@ class WindowApp :
                 except ValueError:
                     return False
         
-        tkinter.Label(a, text="Job Name").grid(row=0, column=0)
-        tkinter.Label(a, text="Enterprise").grid(row=0, column=1)
-        tkinter.Label(a, text="Job Status").grid(row=0, column=2)
-        tkinter.Label(a, text="Application date").grid(row=0, column=3)
-        tkinter.Label(a, text="Job url").grid(row=0, column=4)
-        tkinter.Label(a, text="Job description").grid(row=0, column=5)
-        job_name_entry = tkinter.Entry(a)
+        tkinter.Label(add_window, text="Job Name").grid(row=0, column=0)
+        tkinter.Label(add_window, text="Enterprise").grid(row=0, column=1)
+        tkinter.Label(add_window, text="Job Status").grid(row=0, column=2)
+        tkinter.Label(add_window, text="Application date").grid(row=0, column=3)
+        tkinter.Label(add_window, text="Job url").grid(row=0, column=4)
+        tkinter.Label(add_window, text="Job description").grid(row=0, column=5)
+        job_name_entry = tkinter.Entry(add_window)
         job_name_entry.grid(row=1, column=0, padx=5)
-        enterprise_name_entry = tkinter.Entry(a)
+        enterprise_name_entry = tkinter.Entry(add_window)
         enterprise_name_entry.grid(row=1, column=1)
-        tkinter.OptionMenu(a, current_job_status, *self.job_status).grid(row=1, column=2, padx=5)
+        tkinter.OptionMenu(add_window, current_job_status, *self.job_status).grid(row=1, column=2, padx=5)
         # create a frame to center the date Label betwwen the checkbutton and the date entry
-        date_frame = tkinter.Frame(a)
+        date_frame = tkinter.Frame(add_window)
         # add a check button to specify if the application has been done today
         tkinter.Checkbutton(date_frame, text="Today", variable=check_button_value, command=update_date).grid(row=0, column=0)
         job_date_entry = DateEntry(date_frame)
         job_date_entry.grid(row=0, column=1, padx=5)
         date_frame.grid(row=1, column=3)
-        job_url_entry = tkinter.Entry(a)
+        job_url_entry = tkinter.Entry(add_window)
         job_url_entry.grid(row=1, column=4)
-        job_description = tkinter.Entry(a)
+        job_description = tkinter.Entry(add_window)
         job_description.grid(row=1, column=5, padx=4)
-        tkinter.Checkbutton(a, text="Add timeout", variable=timeout_button_value, command=update_timeout).grid(row=2, column=0)
-        tkinter.Button(a, text="Add", command=submit_job).grid(row=1, column=6, padx=2)
+        tkinter.Checkbutton(add_window, text="Add timeout", variable=timeout_button_value, command=update_timeout).grid(row=2, column=0)
+        tkinter.Button(add_window, text="Add", command=submit_job).grid(row=1, column=6, padx=2)
 
     # view the selected job in the listbox with detailled information
     def view_job(self) :
@@ -566,7 +566,6 @@ class WindowApp :
             csv_out = csv.writer(save_file, delimiter=";", lineterminator="\n")
             for row_out in self.jobs_list :
                 job_out = [row_out["job_name"],row_out["enterprise_name"],row_out["job_status"],row_out["job_date"],row_out["url"],row_out["description"]]
-                print("writing : " + str(job_out))
                 for i, entry in zip(range(len(job_out)),job_out) :
                     if entry == None :
                         job_out[i] = ""
@@ -606,8 +605,6 @@ class WindowApp :
                     # refresh the listbox to dipslay the jobs read from the file
                     self.refresh_all_listbox(jobs_from_file, True)
                     self.refresh_all_listbox(self.jobs_list)
-                for jobs in jobs_from_file :
-                    print(str(jobs))
         else :
             # create the file and refresh the listbox
             # needed if the file picker send a non-existant file
