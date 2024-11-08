@@ -193,8 +193,11 @@ class WindowApp :
     # check if the timeout given by the enterprise is expired 
     # -> the enterprise consider this application refused
     def CheckTimeOut(self, job_date : date, job_timeout) :
-        diff = date.today() - job_date
-        if diff.days > job_timeout : return True
+        if job_timeout != None :
+            diff = date.today() - job_date
+            if diff.days > job_timeout : 
+                return True
+            return False
         return False
 
     # binded with the listbox to get the line in the list and use it on the rest of the app
@@ -577,6 +580,7 @@ class WindowApp :
         if Path(path_to_file).is_file() :
             # open the file and load jobs into a list to send it in refresh_list
             jobs_from_file = []
+            self.jobs_timeout = [] # reset list before adding the timeout
             with open(path_to_file) as file:
                 reader = csv.reader(file, delimiter=";")
                 for values in reader:
