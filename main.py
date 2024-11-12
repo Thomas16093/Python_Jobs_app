@@ -205,7 +205,7 @@ class WindowApp :
         # get the correct index of the value when we edit a filtered version --> modify the correct job in the global list
         def find_index(data) :
             for index, job in enumerate(self.jobs_list) : 
-                if job["job_name"] == data : return index
+                if job == data : return index
         selection = event.widget.curselection()
         if selection:
             if selection[0] != self.job_index :
@@ -214,7 +214,7 @@ class WindowApp :
                 #data = event.widget.get(index)
                 self.event_listbox = event.widget
                 self.selected_job = data
-                self.job_index = find_index(data)
+                self.job_index = find_index(self.current_job_list[index])
                 # allow multi selection
                 # will select the same job in each row help visualize each value of a job
                 for i in range(len(self.listboxs)) :
