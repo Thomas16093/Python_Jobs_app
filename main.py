@@ -6,6 +6,7 @@ from datetime import date
 from pathlib import Path
 import webbrowser as web
 import validators
+return_value = -1
 
 class WindowApp :
     file = None
@@ -28,7 +29,11 @@ class WindowApp :
     job_count = None
     job_details = []
 
-    def __init__(self, main):
+        # refresh a bunch of class variable
+        self.listboxs = []
+        self.listboxs_value = []
+        self.enterprise_filter = []
+        self.job_details = []
         self.m = main
         width, height = self.get_curr_screen_geometry()
         self.m.focus_force() # make window on top -> fix the state left from the screen_geometry func
@@ -173,6 +178,11 @@ class WindowApp :
 
         # finish creating scrollbar
         scrollbar.config(command=self.yview)
+
+    def exit_completly(self) :
+        global return_value
+        return_value = 0
+        self.m.destroy()
 
     def yview(self, *args) :
         for index in range(len(self.listboxs)) :
@@ -618,11 +628,19 @@ class WindowApp :
 
 
 if __name__ == "__main__":
-    # tkinter creation
-    main = tkinter.Tk()
 
-    # call the class to run the windows app
-    app = WindowApp(main)
+    def closing_button() :
+        global return_value
+        return_value = 0
+        main.destroy()
+    while(return_value != 0):
+        # tkinter creation
+        main = tkinter.Tk()
 
-    # display the window app
-    main.mainloop()
+        # call the class to run the windows app
+
+        # change how the X button is handled to add the modification of the return value
+        main.protocol("WM_DELETE_WINDOW", closing_button)
+
+        # display the window app
+        main.mainloop()
