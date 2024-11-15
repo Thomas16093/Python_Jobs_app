@@ -6,6 +6,9 @@ from datetime import date
 from pathlib import Path
 import webbrowser as web
 import validators
+import i18n
+import locale
+
 return_value = -1
 
 class WindowApp :
@@ -29,6 +32,7 @@ class WindowApp :
     job_count = None
     job_details = []
 
+    def __init__(self, main, all_languages):
         # refresh a bunch of class variable
         self.listboxs = []
         self.listboxs_value = []
@@ -633,11 +637,35 @@ if __name__ == "__main__":
         global return_value
         return_value = 0
         main.destroy()
+
+    # use a subfolder aside of the app for the translation
+    translation_folder = Path.cwd().as_posix() + "/translations"
+    # set the variable to nothing
+    available_translation = []
+    # use this folder to try to load the translation files
+    i18n.load_path.append(translation_folder)
+    # iterate in every file of the folder to find a language file 
+    # and propose it to the user in the app
+    for file in Path(translation_folder).iterdir() :
+        # try to slice the file name in three part : jobs_app - language - yml
+        # ex : jobs_app.en.yml
+        slices = str(file.name).split('.')
+        if slices != 3 : pass # if it doesn't match exlude this file
+        available_translation.append(slices[1])
+
+    # use locale to get system locale and use it as default if it exist
+    system_locale = locale.getlocale()[0]
+    # search in known translations if the system locale exist
+    for lang in available_translation :
+        if system_locale.__contains__(lang) : 
+            i18n.set('locale', lang)
+    
     while(return_value != 0):
         # tkinter creation
         main = tkinter.Tk()
 
         # call the class to run the windows app
+        app = WindowApp(main, available_translation)
 
         # change how the X button is handled to add the modification of the return value
         main.protocol("WM_DELETE_WINDOW", closing_button)
