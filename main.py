@@ -44,6 +44,7 @@ class WindowApp :
         self.m.geometry(""+str(int(width / 2))+"x"+str(int(height / 2))+"")
         self.m.title("Jobs list")
 
+        # create the menu for the app
         window_menu = tkinter.Menu(self.m)
         self.m.config(menu=window_menu)
         fileSelector = tkinter.Menu(window_menu, tearoff=0)
@@ -633,6 +634,8 @@ class WindowApp :
 
 if __name__ == "__main__":
 
+    # handle the X button of the app like normal 
+    # but change also the value of return_value to exit the while loop
     def closing_button() :
         global return_value
         return_value = 0
