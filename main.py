@@ -661,37 +661,54 @@ if __name__ == "__main__":
         return_value = 0
         main.destroy()
 
+    def show_start_error() :
+        tkinter.messagebox.showerror("No language found !", "No language found in the translations folder make sure it exist and have at least one language file")
+
     # use a subfolder aside of the app for the translation
     translation_folder = Path.cwd().as_posix() + "/translations"
-    # set the variable to nothing
-    available_translation = []
-    # use this folder to try to load the translation files
-    i18n.load_path.append(translation_folder)
-    # iterate in every file of the folder to find a language file 
-    # and propose it to the user in the app
-    for file in Path(translation_folder).iterdir() :
-        # try to slice the file name in three part : jobs_app - language - yml
-        # ex : jobs_app.en.yml
-        slices = str(file.name).split('.')
-        if slices != 3 : pass # if it doesn't match exlude this file
-        available_translation.append(slices[1])
 
-    # use locale to get system locale and use it as default if it exist
-    system_locale = locale.getlocale()[0]
-    # search in known translations if the system locale exist
-    for lang in available_translation :
-        if system_locale.__contains__(lang) : 
-            i18n.set('locale', lang)
-    
-    while(return_value != 0):
-        # tkinter creation
-        main = tkinter.Tk()
+    # test if the folder exist before trying to load languages file
+    if Path.exists(Path(translation_folder)) :
 
-        # call the class to run the windows app
-        app = WindowApp(main, available_translation)
+        # set the variable to nothing
+        available_translation = []
+        # use this folder to try to load the translation files
+        i18n.load_path.append(translation_folder)
+        # iterate in every file of the folder to find a language file 
+        # and propose it to the user in the app
+        for file in Path(translation_folder).iterdir() :
+            # try to slice the file name in three part : jobs_app - language - yml
+            # ex : jobs_app.en.yml
+            slices = str(file.name).split('.')
+            if slices != 3 : pass # if it doesn't match exlude this file
+            available_translation.append(slices[1])
 
-        # change how the X button is handled to add the modification of the return value
-        main.protocol("WM_DELETE_WINDOW", closing_button)
+        # verify that at least one language file is present before launching the application
+        if len(available_translation) != 0 :
 
-        # display the window app
-        main.mainloop()
+            # use locale to get system locale and use it as default if it exist
+            system_locale = locale.getlocale()[0]
+            # search in known translations if the system locale exist
+            for lang in available_translation :
+                if system_locale.__contains__(lang) : 
+                    i18n.set('locale', lang)
+            
+            while(return_value != 0):
+                # tkinter creation
+                main = tkinter.Tk()
+
+                # call the class to run the windows app
+                app = WindowApp(main, available_translation)
+
+                # change how the X button is handled to add the modification of the return value
+                main.protocol("WM_DELETE_WINDOW", closing_button)
+
+                # display the window app
+                main.mainloop()
+
+        else :
+            show_start_error()
+
+    else : 
+        Path.mkdir(translation_folder)
+        show_start_error()
