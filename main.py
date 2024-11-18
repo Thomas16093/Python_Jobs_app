@@ -31,6 +31,8 @@ class WindowApp :
     event_listbox = None
     job_count = None
     job_details = []
+    current_language = None
+    available_languages = []
 
     def __init__(self, main, all_languages):
         # refresh a bunch of class variable
@@ -38,6 +40,9 @@ class WindowApp :
         self.listboxs_value = []
         self.enterprise_filter = []
         self.job_details = []
+        self.current_language = i18n.get('locale')
+
+        self.available_languages = all_languages
         self.m = main
         width, height = self.get_curr_screen_geometry()
         self.m.focus_force() # make window on top -> fix the state left from the screen_geometry func
@@ -53,7 +58,12 @@ class WindowApp :
         fileSelector.add_command(label="Open", command=self.select_file)
         fileSelector.add_command(label="Save", command=self.save_file)
         fileSelector.add_separator()
-        fileSelector.add_command(label="Exit", command=self.m.destroy)
+        
+        # add a second menu for selecting the languages
+        sub_menu = tkinter.Menu(window_menu, tearoff=0)
+        for lang in self.available_languages :
+            sub_menu.add_command(label=str(lang), command=lambda language=lang: self.refresh_languages(language))
+        window_menu.add_cascade(label=i18n.t('jobs_app.languages'), menu=sub_menu)
 
         # create a frame to host the button of my main window
         button_frame = tkinter.Frame(self.m, borderwidth=0, relief="flat")
@@ -529,6 +539,16 @@ class WindowApp :
                     self.current_job_list.append(job)
                 else : pass
             self.refresh_all_listbox(self.current_job_list)
+
+    def refresh_languages(self, lang):
+        if self.current_language != lang :
+            self.current_language = lang
+            i18n.set('locale', lang)
+            global return_value
+            return_value = 1
+            self.m.destroy()
+        else: 
+            pass
 
     def refresh_dropdown_menu(self) :
         menu = tkinter.OptionMenu
