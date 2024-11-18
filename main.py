@@ -47,17 +47,18 @@ class WindowApp :
         width, height = self.get_curr_screen_geometry()
         self.m.focus_force() # make window on top -> fix the state left from the screen_geometry func
         self.m.geometry(""+str(int(width / 2))+"x"+str(int(height / 2))+"")
-        self.m.title("Jobs list")
+        self.m.title(i18n.t('jobs_app.title'))
 
         # create the menu for the app
         window_menu = tkinter.Menu(self.m)
         self.m.config(menu=window_menu)
         fileSelector = tkinter.Menu(window_menu, tearoff=0)
-        window_menu.add_cascade(label="File", menu=fileSelector)
-        fileSelector.add_command(label="New", command=self.create_file)
-        fileSelector.add_command(label="Open", command=self.select_file)
-        fileSelector.add_command(label="Save", command=self.save_file)
+        window_menu.add_cascade(label=i18n.t('jobs_app.file'), menu=fileSelector)
+        fileSelector.add_command(label=i18n.t('jobs_app.new'), command=self.create_file)
+        fileSelector.add_command(label=i18n.t('jobs_app.open'), command=self.select_file)
+        fileSelector.add_command(label=i18n.t('jobs_app.save'), command=self.save_file)
         fileSelector.add_separator()
+        fileSelector.add_command(label=i18n.t('jobs_app.exit'), command=self.exit_completly)
         
         # add a second menu for selecting the languages
         sub_menu = tkinter.Menu(window_menu, tearoff=0)
@@ -80,21 +81,21 @@ class WindowApp :
         right_button_frame.pack(side="right")
         
         # create the button on a grid inside the frames -> allow a side by side
-        add_button = tkinter.Button(left_button_frame, text="Add a job", command=self.add_job)
+        add_button = tkinter.Button(left_button_frame, text=i18n.t('jobs_app.add_job'), command=self.add_job)
         add_button.grid(row=0, column=0)
-        view_button = tkinter.Button(left_button_frame, text="View", command=self.view_job)
+        view_button = tkinter.Button(left_button_frame, text=i18n.t('jobs_app.view'), command=self.view_job)
         view_button.grid(row=0, column=1)
-        edit_button = tkinter.Button(left_button_frame, text="Edit", command=self.edit_job)
+        edit_button = tkinter.Button(left_button_frame, text=i18n.t('jobs_app.edit'), command=self.edit_job)
         edit_button.grid(row=0, column=2)
 
         # create the filter dropdown list
-        filter_label = tkinter.Label(center_button_frame, text="filter with : ")
+        filter_label = tkinter.Label(center_button_frame, text=i18n.t('jobs_app.filter') + " : ")
         filter_label.pack(side="left")
         self.dropdown_menu = tkinter.OptionMenu(center_button_frame, variable=self.dropdown_variable, value=self.enterprise_filter, command=self.refresh_with_filter)
         self.dropdown_menu.pack(side="left", after=filter_label, expand=True)
 
         # place Exit button in it's own frame to allow a placement on the right side
-        window_exit = tkinter.Button(right_button_frame, text="Exit", command=self.m.destroy)
+        window_exit = tkinter.Button(right_button_frame, text=i18n.t('jobs_app.exit'), command=self.exit_completly)
         window_exit.grid(row=0, column=0, sticky="e")
 
         # create the second frame that host the list of jobs + scrollbar
@@ -140,7 +141,7 @@ class WindowApp :
         # create them in inverse order because the pack manager place the first RIGHT to the rightmost of the window
         # the others follow and stick to the precedent
         tkinter.Entry(job_count_frame, textvariable=self.job_count, width=5, state="readonly").pack(side=tkinter.RIGHT, padx=5)
-        tkinter.Label(job_count_frame, text="Job Count : ").pack(side=tkinter.RIGHT)
+        tkinter.Label(job_count_frame, text=i18n.t('jobs_app.count') + " : ").pack(side=tkinter.RIGHT)
 
         job_count_frame.pack(side=tkinter.RIGHT)
 
@@ -158,35 +159,35 @@ class WindowApp :
         url_job_frame = tkinter.Frame(self.m)
 
         # add the differents value in the frames
-        tkinter.Label(detail_job_frame, text="Job Name").grid(row=0, column=0)
+        tkinter.Label(detail_job_frame, text=i18n.t('jobs_app.name')).grid(row=0, column=0)
         detail_job_name = tkinter.Entry(detail_job_frame, state="readonly")
         detail_job_name.grid(row=1, column=0)
         self.job_details.append(detail_job_name)
-        tkinter.Label(detail_job_frame, text="Enterprise").grid(row=2, column=0)
+        tkinter.Label(detail_job_frame, text=i18n.t('jobs_app.enterprise')).grid(row=2, column=0)
         detail_job_enterprise = tkinter.Entry(detail_job_frame, state="readonly")
         detail_job_enterprise.grid(row=3, column=0)
         self.job_details.append(detail_job_enterprise)
-        tkinter.Label(detail_job_frame, text="Status").grid(row=4, column=0)
+        tkinter.Label(detail_job_frame, text=i18n.t('jobs_app.status')).grid(row=4, column=0)
         detail_job_status = tkinter.Entry(detail_job_frame, state="readonly")
         detail_job_status.grid(row=5, column=0)
         self.job_details.append(detail_job_status)
-        tkinter.Label(detail_job_frame, text="Application date").grid(row=6, column=0)
+        tkinter.Label(detail_job_frame, text=i18n.t('jobs_app.application')).grid(row=6, column=0)
         detail_job_date = tkinter.Entry(detail_job_frame, state="readonly")
         detail_job_date.grid(row=7, column=0)
         self.job_details.append(detail_job_date)
         
-        tkinter.Label(url_job_frame, text="Url : ").grid(row=0, column=0)
+        tkinter.Label(url_job_frame, text=i18n.t('jobs_app.url') + " : ").grid(row=0, column=0)
         detail_job_url = tkinter.Text(url_job_frame, height=1, state="disabled")
         detail_job_url.bind(sequence="<ButtonRelease-1>", func=self.OpenUrl)
         detail_job_url.grid(row=0, column=1)
         self.job_details.append(detail_job_url)
 
-        tkinter.Label(detail_description_frame, text="Desc").grid(row=0, column=0)
+        tkinter.Label(detail_description_frame, text=i18n.t('jobs_app.desc')).grid(row=0, column=0)
         detail_job_desc = tkinter.Text(detail_description_frame, height=7, state="disabled")
         detail_job_desc.grid(row=1, column=0)
         self.job_details.append(detail_job_desc)
 
-        self.timeout_details_label = tkinter.Label(detail_description_frame, text="Timeout has exceeded consider editing this job")
+        self.timeout_details_label = tkinter.Label(detail_description_frame, text=i18n.t('jobs_app.timeout_exceed'))
 
         detail_frame.pack(side=tkinter.BOTTOM, before=job_count_frame)
         url_job_frame.pack(side=tkinter.BOTTOM, before=detail_frame, pady=5)
