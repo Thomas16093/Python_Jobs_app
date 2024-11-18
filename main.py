@@ -662,7 +662,7 @@ if __name__ == "__main__":
         main.destroy()
 
     def show_start_error() :
-        tkinter.messagebox.showerror("No language found !", "No language found in the translations folder make sure it exist and have at least one language file")
+        messagebox.showerror("No language found !", "No language found in the translations folder make sure it exist and have at least one language file")
 
     # use a subfolder aside of the app for the translation
     translation_folder = Path.cwd().as_posix() + "/translations"
