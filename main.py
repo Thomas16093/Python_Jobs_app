@@ -574,11 +574,11 @@ class WindowApp :
             self.refresh_all_listbox([], value_creation=True)
             n.destroy()
         n = tkinter.Tk()
-        n.title("New file")
-        tkinter.Label(n, text="File name : ").grid(row=0)
+        n.title(i18n.t('jobs_app.new_file'))
+        tkinter.Label(n, text=i18n.t('jobs_app.filename') + " : ").grid(row=0)
         entry = tkinter.Entry(n)
         entry.grid(row=0, column=1)
-        submit_button = tkinter.Button(n, text="Submit", command=return_name)
+        submit_button = tkinter.Button(n, text=i18n.t('jobs_app.submit'), command=return_name)
         submit_button.grid(row=1)
 
     # get the path to the file, set it in a class variable to be used in the main app
@@ -589,7 +589,7 @@ class WindowApp :
         )
 
         filename = filedialog.askopenfilename(
-            title="Open a file",
+            title=i18n.t('jobs_app.open_file'),
             initialdir=Path.cwd(), # Use Path to get current working directory
             filetypes=filetype
         )
