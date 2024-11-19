@@ -303,12 +303,12 @@ class WindowApp :
     # add a job on the list with all the different data
     def add_job(self) :
         add_window = tkinter.Tk()
-        add_window.title("Add a job")
+        add_window.title(i18n.t('jobs_app.add_job'))
         current_job_status = tkinter.StringVar(add_window)
         # add a boolean variable for testing if we want to add a job today
         check_button_value = tkinter.BooleanVar(add_window)
         timeout_button_value = tkinter.BooleanVar(add_window)
-        timeout_label = tkinter.Label(add_window, text="days", width=4)
+        timeout_label = tkinter.Label(add_window, text=i18n.t('jobs_app.days'), width=4)
         timeout_entry = tkinter.Entry(add_window, justify=tkinter.RIGHT)
 
         def submit_job() :
@@ -357,12 +357,12 @@ class WindowApp :
                 except ValueError:
                     return False
         
-        tkinter.Label(add_window, text="Job Name").grid(row=0, column=0)
-        tkinter.Label(add_window, text="Enterprise").grid(row=0, column=1)
-        tkinter.Label(add_window, text="Job Status").grid(row=0, column=2)
-        tkinter.Label(add_window, text="Application date").grid(row=0, column=3)
-        tkinter.Label(add_window, text="Job url").grid(row=0, column=4)
-        tkinter.Label(add_window, text="Job description").grid(row=0, column=5)
+        tkinter.Label(add_window, text=i18n.t('jobs_app.name')).grid(row=0, column=0)
+        tkinter.Label(add_window, text=i18n.t('jobs_app.enterprise')).grid(row=0, column=1)
+        tkinter.Label(add_window, text=i18n.t('jobs_app.status')).grid(row=0, column=2)
+        tkinter.Label(add_window, text=i18n.t('jobs_app.application')).grid(row=0, column=3)
+        tkinter.Label(add_window, text=i18n.t('jobs_app.url')).grid(row=0, column=4)
+        tkinter.Label(add_window, text=i18n.t('jobs_app.description')).grid(row=0, column=5)
         job_name_entry = tkinter.Entry(add_window)
         job_name_entry.grid(row=1, column=0, padx=5)
         enterprise_name_entry = tkinter.Entry(add_window)
@@ -371,7 +371,7 @@ class WindowApp :
         # create a frame to center the date Label betwwen the checkbutton and the date entry
         date_frame = tkinter.Frame(add_window)
         # add a check button to specify if the application has been done today
-        tkinter.Checkbutton(date_frame, text="Today", variable=check_button_value, command=update_date).grid(row=0, column=0)
+        tkinter.Checkbutton(date_frame, text=i18n.t('jobs_app.today'), variable=check_button_value, command=update_date).grid(row=0, column=0)
         job_date_entry = DateEntry(date_frame)
         job_date_entry.grid(row=0, column=1, padx=5)
         date_frame.grid(row=1, column=3)
@@ -379,26 +379,26 @@ class WindowApp :
         job_url_entry.grid(row=1, column=4)
         job_description = tkinter.Entry(add_window)
         job_description.grid(row=1, column=5, padx=4)
-        tkinter.Checkbutton(add_window, text="Add timeout", variable=timeout_button_value, command=update_timeout).grid(row=2, column=0)
-        tkinter.Button(add_window, text="Add", command=submit_job).grid(row=1, column=6, padx=2)
+        tkinter.Checkbutton(add_window, text=i18n.t('jobs_app.add_timeout'), variable=timeout_button_value, command=update_timeout).grid(row=2, column=0)
+        tkinter.Button(add_window, text=i18n.t('jobs_app.submit'), command=submit_job).grid(row=1, column=6, padx=2)
 
     # view the selected job in the listbox with detailled information
     def view_job(self) :
         if self.job_index != None :
             view_window = tkinter.Tk()
             view_window.title("Job : " + str(self.selected_job))
-            tkinter.Label(view_window, text="Job Name").grid(row=0, column=0)
-            tkinter.Label(view_window, text="Enterprise").grid(row=0, column=1)
-            tkinter.Label(view_window, text="Job Status").grid(row=0, column=2)
-            tkinter.Label(view_window, text="Application date").grid(row=0, column=3)
-            tkinter.Label(view_window, text="Job description").grid(row=0, column=4)
+            tkinter.Label(view_window, text=i18n.t('jobs_app.name')).grid(row=0, column=0)
+            tkinter.Label(view_window, text=i18n.t('jobs_app.enterprise')).grid(row=0, column=1)
+            tkinter.Label(view_window, text=i18n.t('jobs_app.status')).grid(row=0, column=2)
+            tkinter.Label(view_window, text=i18n.t('jobs_app.application')).grid(row=0, column=3)
+            tkinter.Label(view_window, text=i18n.t('jobs_app.description')).grid(row=0, column=4)
             tkinter.Label(view_window, text=self.selected_job, borderwidth=2, relief="groove").grid(row=1, column=0)
             tkinter.Label(view_window, text=self.jobs_list[self.job_index]["enterprise_name"], borderwidth=2, relief="groove").grid(row=1, column=1)
             tkinter.Label(view_window, text=self.jobs_list[self.job_index]["job_status"], borderwidth=2, relief="groove").grid(row=1, column=2)
             tkinter.Label(view_window, text=str(self.jobs_list[self.job_index]["job_date"]), borderwidth=2, relief="groove").grid(row=1, column=3)
             tkinter.Label(view_window, text=self.jobs_list[self.job_index]["description"], borderwidth=2, relief="groove").grid(row=1, column=4)
             if self.jobs_timeout[self.job_index] != None : tkinter.Label(view_window, text=self.jobs_timeout[self.job_index], borderwidth=2, relief="groove").grid(row=2, column=0)
-            tkinter.Button(view_window, text="Exit", command=view_window.destroy).grid(row=2, column=4)
+            tkinter.Button(view_window, text=i18n.t('jobs_app.exit'), command=view_window.destroy).grid(row=2, column=4)
         else :
             messagebox.showwarning("View job","Select a job first !")
 
@@ -406,7 +406,7 @@ class WindowApp :
     def edit_job(self) :
         if self.job_index != None :
             edit_window = tkinter.Tk()
-            edit_window.title("Edit job : " + str(self.selected_job))
+            edit_window.title(i18n.t('jobs_app.edit_job') + " : " + str(self.selected_job))
             current_job_status = tkinter.StringVar(edit_window)
             # add a boolean variable for testing if we want to add a job today
             check_button_value = tkinter.BooleanVar(edit_window)
@@ -444,12 +444,12 @@ class WindowApp :
                 if check_change_value.get() :
                     current_job_status.set(self.job_status[2])
 
-            tkinter.Label(edit_window, text="Job Name").grid(row=0, column=0)
-            tkinter.Label(edit_window, text="Enterprise").grid(row=0, column=1)
-            tkinter.Label(edit_window, text="Job Status").grid(row=0, column=2)
-            tkinter.Label(edit_window, text="Application date").grid(row=0, column=3)
-            tkinter.Label(edit_window, text="Job url").grid(row=0, column=4)
-            tkinter.Label(edit_window, text="Job description").grid(row=0, column=5)
+            tkinter.Label(edit_window, text=i18n.t('jobs_app.name')).grid(row=0, column=0)
+            tkinter.Label(edit_window, text=i18n.t('jobs_app.enterprise')).grid(row=0, column=1)
+            tkinter.Label(edit_window, text=i18n.t('jobs_app.status')).grid(row=0, column=2)
+            tkinter.Label(edit_window, text=i18n.t('jobs_app.application')).grid(row=0, column=3)
+            tkinter.Label(edit_window, text=i18n.t('jobs_app.url')).grid(row=0, column=4)
+            tkinter.Label(edit_window, text=i18n.t('jobs_app.description')).grid(row=0, column=5)
             # create a local variable for accessing the current_job easily
             current_job = self.jobs_list[self.job_index]
             job_name_entry = tkinter.Entry(edit_window)
@@ -465,7 +465,7 @@ class WindowApp :
             date_frame = tkinter.Frame(edit_window)
 
             # add a check button to specify if the application has been done today
-            tkinter.Checkbutton(date_frame, text="Today", variable=check_button_value, command=update_date).grid(row=0, column=0)
+            tkinter.Checkbutton(date_frame, text=i18n.t('jobs_app.today'), variable=check_button_value, command=update_date).grid(row=0, column=0)
             
             job_date_entry = DateEntry(date_frame)
             if current_job["job_date"] != "" : job_date_entry.set_date(current_job["job_date"])
@@ -481,20 +481,20 @@ class WindowApp :
             job_description = tkinter.Entry(edit_window)
             job_description.insert(0, str(current_job["description"]))
             job_description.grid(row=1, column=5, padx=4)
-            tkinter.Button(edit_window, text="Edit", command=submit_job).grid(row=1, column=6, padx=2)
+            tkinter.Button(edit_window, text=i18n.t('jobs_app.submit'), command=submit_job).grid(row=1, column=6, padx=2)
 
             if self.jobs_timeout[self.job_index] != None :
                 if current_job["job_date"] != "" :
                     timed_out = self.CheckTimeOut(current_job["job_date"], self.jobs_timeout[self.job_index])
                     if timed_out :
                         tkinter.Checkbutton(edit_window, 
-                            text="Timeout exceeded change job to refused ? ", 
+                            text=i18n.t('jobs_app.timeout_refused'), 
                             variable=check_change_value, 
                             command=change_status).grid(row=2, column=0, columnspan=2)
                 else :
-                    tkinter.Label(edit_window, text="A timeout has been set but not an application date").grid(row=2, column=0, columnspan=3)
+                    tkinter.Label(edit_window, text=i18n.t('jobs_app.timeout_no_date')).grid(row=2, column=0, columnspan=3)
         else :
-            messagebox.showwarning("Edit job","Select a job first !")
+            messagebox.showwarning(i18n.t('jobs_app.edit_job'),i18n.t('jobs_app.warning_select'))
 
 
     def refresh_list(self, list_box : tkinter.Listbox, list : dict, list_value : str, creation : bool) :
