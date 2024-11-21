@@ -324,6 +324,8 @@ class WindowApp :
             if timeout_button_value.get() : 
                 if validate_timeout_value() :
                     self.jobs_timeout.append(int(timeout_entry.get()))
+            else : 
+                self.jobs_timeout.append(None)
             self.jobs_list.insert(len(self.jobs_list), job)
             # refresh with the current list and not the global one
             # --> avoid getting back to all job with the filter value set to True
