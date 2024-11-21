@@ -354,7 +354,7 @@ class WindowApp :
             input_data = timeout_entry.get()
             if input_data:
                 try:
-                    float(input_data)
+                    int(input_data)
                     return True
                 except ValueError:
                     return False
