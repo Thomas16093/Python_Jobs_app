@@ -324,6 +324,8 @@ class WindowApp :
             if timeout_button_value.get() : 
                 if validate_timeout_value() :
                     self.jobs_timeout.append(int(timeout_entry.get()))
+                else :
+                    self.jobs_timeout.append(None)
             else : 
                 self.jobs_timeout.append(None)
             self.jobs_list.insert(len(self.jobs_list), job)
@@ -358,6 +360,7 @@ class WindowApp :
                     return True
                 except ValueError:
                     return False
+            return False
         
         tkinter.Label(add_window, text=i18n.t('jobs_app.name')).grid(row=0, column=0)
         tkinter.Label(add_window, text=i18n.t('jobs_app.enterprise')).grid(row=0, column=1)
@@ -503,6 +506,7 @@ class WindowApp :
         if creation :
             list_box.delete(0, tkinter.END)
             self.jobs_list = list
+            self.jobs_timeout = []
             self.current_job_list = list
             self.enterprise_filter = []
             self.enterprise_is_filtered = False
