@@ -606,11 +606,12 @@ class WindowApp :
         # to change with the dump of the data in the csv
         with open(self.filename, "w", newline='') as save_file : 
             csv_out = csv.writer(save_file, delimiter=";", lineterminator="\n")
-            for row_out in self.jobs_list :
+            for i, row_out in zip(range(len(self.jobs_list)),self.jobs_list) :
                 job_out = [row_out["job_name"],row_out["enterprise_name"],row_out["job_status"],row_out["job_date"],row_out["url"],row_out["description"]]
-                for i, entry in zip(range(len(job_out)),job_out) :
+                job_out.append(self.jobs_timeout[i])
+                for j, entry in zip(range(len(job_out)),job_out) :
                     if entry == None :
-                        job_out[i] = ""
+                        job_out[j] = ""
                 csv_out.writerow(job_out)
 
     # load the file selected from the file picker
