@@ -284,9 +284,9 @@ class WindowApp :
                     if self.jobs_list[self.job_index]["job_status"] != "Refused" :
                         self.job_details[text_entry].config(height=6)
                         self.timeout_details_label.grid(row=2, column=0)
-            else :
-                self.timeout_details_label.grid_forget()
-                self.job_details[text_entry].config(height=7)
+                else :
+                    self.timeout_details_label.grid_forget()
+                    self.job_details[text_entry].config(height=7)
                 
      
     # pulled from a forum -> should be able to determine the screen value even on a multi monitor setup
