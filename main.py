@@ -623,7 +623,8 @@ class WindowApp :
         if Path(path_to_file).is_file() :
             # open the file and load jobs into a list to send it in refresh_list
             jobs_from_file = []
-            self.jobs_timeout = [] # reset list before adding the timeout
+            #self.jobs_timeout = [] # reset list before adding the timeout
+            self.refresh_all_listbox(jobs_from_file, True) # reset all listbox before displaying the new one
             with open(path_to_file) as file:
                 reader = csv.reader(file, delimiter=";")
                 for values in reader:
@@ -650,9 +651,8 @@ class WindowApp :
                         job["job_date"] = date(int(job_date[0]), int(job_date[1]), int(job_date[2]))
 
                     jobs_from_file.append(job)
-                    # refresh the listbox to dipslay the jobs read from the file
-                    self.refresh_all_listbox(jobs_from_file, True)
-                    self.refresh_all_listbox(self.jobs_list)
+            # refresh the listbox to dipslay the jobs read from the file
+            self.refresh_all_listbox(self.jobs_list)
         else :
             # create the file and refresh the listbox
             # needed if the file picker send a non-existant file
