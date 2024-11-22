@@ -613,16 +613,33 @@ class WindowApp :
     
     # write into a csv file the modified data to keep them between use
     def save_file(self) :
-        # to change with the dump of the data in the csv
-        with open(self.filename, "w", newline='') as save_file : 
-            csv_out = csv.writer(save_file, delimiter=";", lineterminator="\n")
-            for i, row_out in zip(range(len(self.jobs_list)),self.jobs_list) :
-                job_out = [row_out["job_name"],row_out["enterprise_name"],row_out["job_status"],row_out["job_date"],row_out["url"],row_out["description"]]
-                job_out.append(self.jobs_timeout[i])
-                for j, entry in zip(range(len(job_out)),job_out) :
-                    if entry == None :
-                        job_out[j] = ""
-                csv_out.writerow(job_out)
+        # needed because lambda command doesn't properly get the value in the Entry
+        def get_value():
+            self.filename = file.get()
+        # add the extension if necessary
+        def check_extensions():
+            if (self.filename.endswith('.csv') == False) :
+                self.filename = self.filename + str('.csv')
+        # ask for a filename if none is set
+        if self.filename == "" :
+            filename_window = tkinter.Tk()
+            filename_window.title(i18n.t('jobs_app.filename'))
+            file = tkinter.StringVar(filename_window)
+
+            tkinter.Label(filename_window, text=i18n.t('jobs_app.ask_filename')).pack()
+            tkinter.Entry(filename_window, textvariable=file).pack()
+            tkinter.Button(filename_window, text=i18n.t('jobs_app.submit'), command = lambda value=file.get(): (setattr(self, 'filename', value), get_value(), check_extensions(), self.save_file(), filename_window.destroy())).pack()
+        else :
+            # to change with the dump of the data in the csv
+            with open(self.filename, "w", newline='') as save_file : 
+                csv_out = csv.writer(save_file, delimiter=";", lineterminator="\n")
+                for i, row_out in zip(range(len(self.jobs_list)),self.jobs_list) :
+                    job_out = [row_out["job_name"],row_out["enterprise_name"],row_out["job_status"],row_out["job_date"],row_out["url"],row_out["description"]]
+                    job_out.append(self.jobs_timeout[i])
+                    for j, entry in zip(range(len(job_out)),job_out) :
+                        if entry == None :
+                            job_out[j] = ""
+                    csv_out.writerow(job_out)
 
     # load the file selected from the file picker
     def load_list_from_file(self, path_to_file) :
