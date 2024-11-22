@@ -256,6 +256,14 @@ class WindowApp :
     
     # gather information from the selection to display each information on the bottom entry
     def update_job_detail(self) :
+        def update_timeout(status : bool):
+            if status :
+                self.job_details[text_entry].config(height=6)
+                self.timeout_details_label.grid(row=2, column=0)
+            else :
+                self.timeout_details_label.grid_forget()
+                self.job_details[text_entry].config(height=7)
+
         if self.job_index != None :
             text_entry = None
             # get each field that will display an info and each key for the job to get the value needed
@@ -282,11 +290,9 @@ class WindowApp :
             if self.jobs_list[self.job_index]["job_date"] != "" :
                 if self.CheckTimeOut(self.jobs_list[self.job_index]["job_date"], self.jobs_timeout[self.job_index]) :
                     if self.jobs_list[self.job_index]["job_status"] != "Refused" :
-                        self.job_details[text_entry].config(height=6)
-                        self.timeout_details_label.grid(row=2, column=0)
-                else :
-                    self.timeout_details_label.grid_forget()
-                    self.job_details[text_entry].config(height=7)
+                        update_timeout(True)
+                else : update_timeout(False)
+            else : update_timeout(False)
                 
      
     # pulled from a forum -> should be able to determine the screen value even on a multi monitor setup
