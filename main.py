@@ -17,9 +17,8 @@ class WindowApp :
     selected_job = ""
     job_index = None
     job_template = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "url" : "", "description" : "" }
-    jobs_list = []
-    job_status = [ "", "On going", "Refused", "Approved"]
-    jobs_timeout = []
+    job_status_template = [ "", "On going", "Refused", "Approved"]
+    job_status = []
     timeout_details_label = None
     listboxs = []
     listboxs_value = []
@@ -41,6 +40,7 @@ class WindowApp :
         self.enterprise_filter = []
         self.job_details = []
         self.current_language = i18n.get('locale')
+        self.job_status = [ "", i18n.t('jobs_app.ongoing'), i18n.t('jobs_app.refused'), i18n.t('jobs_app.approved')]
 
         self.available_languages = all_languages
         self.m = main
@@ -321,7 +321,7 @@ class WindowApp :
             job = self.job_template.copy()
             job["job_name"] = job_name_entry.get()
             job["enterprise_name"] = enterprise_name_entry.get()
-            job["job_status"] = current_job_status.get()
+            job["job_status"] = get_job_status(current_job_status.get())
             if job_date_entry.get_date() != date(2000, 1, 1) :
                 job["job_date"] = job_date_entry.get_date()
             else : job["job_date"] = ""
@@ -367,6 +367,12 @@ class WindowApp :
                 except ValueError:
                     return False
             return False
+
+        def get_job_status(current_status : str) :
+            if current_status == "" : return ""
+            elif current_status == i18n.t('jobs_app.ongoing') : return "On going"
+            elif current_status == i18n.t('jobs_app.refused') : return "Refused"
+            elif current_status == i18n.t('jobs_app.approved') : return "Approved"
         
         tkinter.Label(add_window, text=i18n.t('jobs_app.name')).grid(row=0, column=0)
         tkinter.Label(add_window, text=i18n.t('jobs_app.enterprise')).grid(row=0, column=1)
@@ -427,7 +433,7 @@ class WindowApp :
                 job = self.job_template.copy() # get current job template to populate with the new values
                 job["job_name"] = job_name_entry.get()
                 job["enterprise_name"] = enterprise_name_entry.get()
-                job["job_status"] = current_job_status.get()
+                job["job_status"] = get_job_status(current_job_status.get())
                 # if the date is today ( default with DateEntry ) but not wanted -> add nothing
                 if job_date_entry.get_date() == date.today() and check_button_value == False :
                     job["job_date"] = ""
@@ -454,6 +460,12 @@ class WindowApp :
             def change_status() :
                 if check_change_value.get() :
                     current_job_status.set(self.job_status[2])
+
+            def get_job_status(current_status : str) :
+                if current_status == "" : return ""
+                elif current_status == i18n.t('jobs_app.ongoing') : return "On going"
+                elif current_status == i18n.t('jobs_app.refused') : return "Refused"
+                elif current_status == i18n.t('jobs_app.approved') : return "Approved"
 
             tkinter.Label(edit_window, text=i18n.t('jobs_app.name')).grid(row=0, column=0)
             tkinter.Label(edit_window, text=i18n.t('jobs_app.enterprise')).grid(row=0, column=1)
@@ -520,6 +532,10 @@ class WindowApp :
             list_box.delete(0, tkinter.END)
             for line in range(len(list)) :
                 job = list[line][list_value]
+                if list_value == "job_status" and job != "" : 
+                    if job == "On going" : job = i18n.t('jobs_app.ongoing')
+                    if job == "Refused" : job = i18n.t('jobs_app.refused')
+                    if job == "Approved" : job = i18n.t('jobs_app.approved')
                 list_box.insert(line, str(job))
     
     def refresh_all_listbox(self, list_jobs : dict, value_creation = False) :
