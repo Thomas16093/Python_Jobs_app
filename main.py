@@ -91,7 +91,9 @@ class WindowApp :
         # create the filter dropdown list
         filter_label = tkinter.Label(center_button_frame, text=i18n.t('jobs_app.filter') + " : ")
         filter_label.pack(side="left")
-        self.dropdown_menu = tkinter.OptionMenu(center_button_frame, variable=self.dropdown_variable, value=self.enterprise_filter, command=self.refresh_with_filter)
+        self.dropdown_variable = tkinter.StringVar(center_button_frame)
+        self.dropdown_variable.set("All")
+        self.dropdown_menu = tkinter.OptionMenu(center_button_frame, variable=self.dropdown_variable, value=self.dropdown_variable.get())
         self.dropdown_menu.pack(side="left", after=filter_label, expand=True)
 
         # place Exit button in it's own frame to allow a placement on the right side
@@ -556,7 +558,7 @@ class WindowApp :
             self.refresh_dropdown_menu()
 
     def refresh_with_filter(self) :
-        enterprise_selected = self.dropdown_variable
+        enterprise_selected = self.dropdown_variable.get()
         # check if we have selected an enterprise or we want to display all of them
         if enterprise_selected == "All" :
             self.enterprise_is_filtered = False
@@ -585,14 +587,14 @@ class WindowApp :
     def refresh_dropdown_menu(self) :
         menu = tkinter.OptionMenu
         menu = self.dropdown_menu["menu"]
-        menu.delete(0, "end")
+        menu.delete(0, tkinter.END)
 
         # bypass the automatic affectation of OptionMenu that doesn't work for my need 
-        menu.add_command(label="All", command = lambda value="All" : (setattr(self, 'dropdown_variable', value), self.refresh_with_filter()))
+        menu.add_command(label="All", command = lambda value="All" : (self.dropdown_variable.set(value), self.refresh_with_filter()))
         for string in self.enterprise_filter:
             if string != "" :
                 menu.add_command(label=string,
-                            command = lambda value=string: (setattr(self, 'dropdown_variable', value), self.refresh_with_filter())) 
+                            command = lambda value=string: (self.dropdown_variable.set(value), self.refresh_with_filter())) 
             else : pass
 
     # get the name of the new file and set it in a class variable then close the window
@@ -665,8 +667,10 @@ class WindowApp :
         if Path(path_to_file).is_file() :
             # open the file and load jobs into a list to send it in refresh_list
             jobs_from_file = []
-            #self.jobs_timeout = [] # reset list before adding the timeout
-            self.refresh_all_listbox(jobs_from_file, True) # reset all listbox before displaying the new one
+            # reset the filter when loading a new file
+            self.dropdown_variable.set("All")
+            # reset all listbox before displaying the new one
+            self.refresh_all_listbox(jobs_from_file, True) 
             with open(path_to_file) as file:
                 reader = csv.reader(file, delimiter=";")
                 for values in reader:
