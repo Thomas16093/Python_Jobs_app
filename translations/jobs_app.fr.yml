@@ -1,0 +1,41 @@
+fr:
+  # utiliser par l'affichage principal
+  title: Liste d'emplois
+  file: Fichier
+  new: Nouveau
+  open: Ouvrir
+  edit: Éditer
+  view: Affichage
+  save: Sauvegarder
+  exit: Quitter
+  languages: Langages
+  count: Nombre de postes
+  filter: Filtrer par
+  timeout_exceed: Le délai est dépasser, il faut peut-être modifier le poste
+
+  # job status
+  ongoing: En cours
+  refused: Refusé
+  approved: Accepté
+
+  # utiliser par les autres fenêtres
+  add_job: Ajouter un poste
+  edit_job: Éditer un poste
+  new_file: Nouveau fichier
+  open_file: Ouvrir un fichier
+  name: Nom du poste
+  url: Url du poste
+  description: Description du poste
+  enterprise: Entreprise
+  status: Status
+  application: Date d'envoi
+  desc: Détail
+  days: jours
+  today: aujourd'hui
+  add_timeout: Ajouter un délai
+  submit: Valider
+  timeout_refused: Le délai est dépasser changer le poste à refuser ?
+  timeout_no_date: Un délai est renseigner mais pas une date d'envoi
+  warning_select: Sélectionner un poste en premier !
+  filename: Nom du fichier
+  ask_filename: Choisissez un nom pour votre fichier
