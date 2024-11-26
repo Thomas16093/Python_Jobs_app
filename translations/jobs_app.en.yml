@@ -1,0 +1,41 @@
+en:
+  # used by the main window
+  title: Jobs list
+  file: file
+  new: New
+  open: Open
+  edit: Edit
+  view: View
+  save: Save
+  exit: Exit
+  languages: Languages
+  count: Job Count
+  filter: filter with
+  timeout_exceed: Timeout has exceeded consider editing this job
+
+  # job status
+  ongoing: On going
+  refused: Refused
+  approved: Approved
+
+  # used by others window
+  add_job: Add a job
+  edit_job: Edit job
+  new_file: New file
+  open_file: Open a file
+  name: Job name
+  url: Job url
+  description: Job description
+  enterprise: Enterprise
+  status: Status
+  application: Application date
+  desc: Desc
+  days: days
+  today: Today
+  add_timeout: Add timeout
+  submit: Submit
+  timeout_refused: Timeout exceeded change job to refused ?
+  timeout_no_date: A timeout has been set but not an application date
+  warning_select: Select a job first !
+  filename: Filename
+  ask_filename: Choose a name for your file
