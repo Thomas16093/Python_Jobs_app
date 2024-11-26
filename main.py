@@ -271,6 +271,9 @@ class WindowApp :
                 # check if a value is given, if not a blank value is set
                 if self.jobs_list[self.job_index] != None :
                     temp_str = str(self.jobs_list[self.job_index][i])
+                    if temp_str == "On going" : temp_str = i18n.t('jobs_app.ongoing')
+                    elif temp_str == "Refused" : temp_str = i18n.t('jobs_app.refused')
+                    elif temp_str == "Approved" : temp_str = i18n.t('jobs_app.approved')
                 else :
                     temp_str = ""
                 # get the type of the field to check if it's a Text or an Entry
