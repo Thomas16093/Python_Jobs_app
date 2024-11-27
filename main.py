@@ -222,9 +222,11 @@ class WindowApp :
     # -> the enterprise consider this application refused
     def CheckTimeOut(self, job_date : date, job_timeout) :
         if job_timeout != None :
-            diff = date.today() - job_date
-            if diff.days > job_timeout : 
-                return True
+            if type(job_date) == date :
+                diff = date.today() - job_date
+                if diff.days > job_timeout : 
+                    return True
+                return False
             return False
         return False
 
