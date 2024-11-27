@@ -39,3 +39,6 @@ fr:
   warning_select: Sélectionner un poste en premier !
   filename: Nom du fichier
   ask_filename: Choisissez un nom pour votre fichier
+  days_remaining: Jours restant pour ce poste
+  job_refused: Le délai est dépassé -> Poste refusé !
+  no_timeout: Pas de délai défini pour ce poste

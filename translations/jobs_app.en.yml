@@ -39,3 +39,6 @@ en:
   warning_select: Select a job first !
   filename: Filename
   ask_filename: Choose a name for your file
+  days_remaining: Days remaining for this job
+  job_refused: Timeout exceeded -> job refused !
+  no_timeout: No timeout set for this job

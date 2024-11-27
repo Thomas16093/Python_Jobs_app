@@ -412,17 +412,34 @@ class WindowApp :
             view_window = tkinter.Tk()
             view_window.title("Job : " + str(self.selected_job))
             tkinter.Label(view_window, text=i18n.t('jobs_app.name')).grid(row=0, column=0)
-            tkinter.Label(view_window, text=i18n.t('jobs_app.enterprise')).grid(row=0, column=1)
-            tkinter.Label(view_window, text=i18n.t('jobs_app.status')).grid(row=0, column=2)
-            tkinter.Label(view_window, text=i18n.t('jobs_app.application')).grid(row=0, column=3)
-            tkinter.Label(view_window, text=i18n.t('jobs_app.description')).grid(row=0, column=4)
-            tkinter.Label(view_window, text=self.selected_job, borderwidth=2, relief="groove").grid(row=1, column=0)
-            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["enterprise_name"], borderwidth=2, relief="groove").grid(row=1, column=1)
-            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["job_status"], borderwidth=2, relief="groove").grid(row=1, column=2)
-            tkinter.Label(view_window, text=str(self.jobs_list[self.job_index]["job_date"]), borderwidth=2, relief="groove").grid(row=1, column=3)
-            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["description"], borderwidth=2, relief="groove").grid(row=1, column=4)
-            if self.jobs_timeout[self.job_index] != None : tkinter.Label(view_window, text=self.jobs_timeout[self.job_index], borderwidth=2, relief="groove").grid(row=2, column=0)
-            tkinter.Button(view_window, text=i18n.t('jobs_app.exit'), command=view_window.destroy).grid(row=2, column=4)
+            tkinter.Label(view_window, text=self.selected_job, borderwidth=2, relief=tkinter.GROOVE).grid(row=0, column=1)
+
+            tkinter.Label(view_window, text=i18n.t('jobs_app.enterprise')).grid(row=1, column=0)
+            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["enterprise_name"], borderwidth=2, relief=tkinter.GROOVE).grid(row=1, column=1)
+
+            tkinter.Label(view_window, text=i18n.t('jobs_app.status')).grid(row=2, column=0)
+            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["job_status"], borderwidth=2, relief=tkinter.GROOVE).grid(row=2, column=1)
+
+            tkinter.Label(view_window, text=i18n.t('jobs_app.application')).grid(row=3, column=0)
+            tkinter.Label(view_window, text=str(self.jobs_list[self.job_index]["job_date"]), borderwidth=2, relief=tkinter.GROOVE).grid(row=3, column=1)
+
+            tkinter.Label(view_window, text=i18n.t('jobs_app.description')).grid(row=4, column=0)
+            tkinter.Label(view_window, text=self.jobs_list[self.job_index]["description"], borderwidth=2, relief=tkinter.GROOVE).grid(row=4, column=1)
+
+            if self.jobs_timeout[self.job_index] != None : 
+                job_timeout = self.jobs_timeout[self.job_index]
+                if self.CheckTimeOut(self.jobs_list[self.job_index]["job_date"], job_timeout) and self.jobs_list[self.job_index]["job_status"] != "Refused":
+                    tkinter.Label(view_window, text=i18n.t('jobs_app.timeout_exceed')).grid(row=5, columnspan=2)
+                else :
+                    if type(self.jobs_list[self.job_index]["job_date"]) == date :
+                        if self.jobs_list[self.job_index]["job_status"] != "Refused" :
+                            remaining = date.today() - self.jobs_list[self.job_index]["job_date"]
+                            tkinter.Label(view_window, text=i18n.t('jobs_app.days_remaining') + " : " + str(remaining.days), borderwidth=2, relief=tkinter.GROOVE).grid(row=5, columnspan=2)
+                        else :
+                            tkinter.Label(view_window, text=i18n.t('jobs_app.job_refused'), borderwidth=2, relief=tkinter.GROOVE).grid(row=5, columnspan=2)
+            else :
+                tkinter.Label(view_window, text=i18n.t('jobs_app.no_timeout'), borderwidth=2, relief=tkinter.GROOVE).grid(row=5, columnspan=2)
+            tkinter.Button(view_window, text=i18n.t('jobs_app.exit'), command=view_window.destroy).grid(row=6, column=0)
         else :
             messagebox.showwarning("View job","Select a job first !")
 
