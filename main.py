@@ -449,7 +449,7 @@ class WindowApp :
                 self.jobs_list.insert(self.job_index, job)
                 # refresh with the current list and not the global one
                 # --> avoid getting back to all job with the filter value set to True
-                self.refresh_all_listbox(self.current_job_list) 
+                self.refresh_with_filter() 
                 edit_window.destroy()
 
             def update_date() :
