@@ -40,4 +40,4 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: jobs_app
-        path: dist/main/
+        path: /home/runner/work/Python_Jobs_app/Python_Jobs_app/dist/main/
