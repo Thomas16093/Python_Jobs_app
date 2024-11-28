@@ -20,6 +20,7 @@ class WindowApp :
     jobs_list = [ job_template.copy() ]
     job_status_template = [ "", "On going", "Refused", "Approved"]
     job_status = []
+    jobs_timeout = []
     timeout_details_label = None
     listboxs = []
     listboxs_value = []
