@@ -17,6 +17,7 @@ class WindowApp :
     selected_job = ""
     job_index = None
     job_template = {"job_name" : "", "enterprise_name" : "", "job_status" : "", "job_date" : "", "url" : "", "description" : "" }
+    jobs_list = [ job_template.copy() ]
     job_status_template = [ "", "On going", "Refused", "Approved"]
     job_status = []
     timeout_details_label = None
