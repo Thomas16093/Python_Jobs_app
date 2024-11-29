@@ -2,7 +2,7 @@ import csv
 import tkinter
 from tkinter import messagebox, filedialog
 from tkcalendar import DateEntry
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 import webbrowser as web
 import validators
@@ -435,8 +435,11 @@ class WindowApp :
                 else :
                     if type(self.jobs_list[self.job_index]["job_date"]) == date :
                         if self.jobs_list[self.job_index]["job_status"] != "Refused" :
-                            remaining = date.today() - self.jobs_list[self.job_index]["job_date"]
-                            tkinter.Label(view_window, text=i18n.t('jobs_app.days_remaining') + " : " + str(remaining.days), borderwidth=2, relief=tkinter.GROOVE).grid(row=5, columnspan=2)
+                            remaining = date.today() + timedelta(days=job_timeout) - self.jobs_list[self.job_index]["job_date"]
+                            if remaining.days >= 1 :
+                                tkinter.Label(view_window, text=i18n.t('jobs_app.days_remaining') + " : " + str(remaining.days), borderwidth=2, relief=tkinter.GROOVE).grid(row=5, columnspan=2)
+                            else : 
+                                tkinter.Label(view_window, text=i18n.t('jobs_app.job_refused'), borderwidth=2, relief=tkinter.GROOVE).grid(row=5, columnspan=2)
                         else :
                             tkinter.Label(view_window, text=i18n.t('jobs_app.job_refused'), borderwidth=2, relief=tkinter.GROOVE).grid(row=5, columnspan=2)
             else :
