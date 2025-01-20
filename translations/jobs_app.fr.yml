@@ -42,3 +42,7 @@ fr:
   days_remaining: Jours restant pour ce poste
   job_refused: Le délai est dépassé -> Poste refusé !
   no_timeout: Pas de délai défini pour ce poste
+  list_expired: Voici la liste de(s) poste(s) ayant un délai dépassé
+  expired: a expiré il y a
+  days_ago: jour(s)
+  change_expired: Passé le(s) postes en refusé ?

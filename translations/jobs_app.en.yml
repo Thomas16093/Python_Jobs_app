@@ -42,3 +42,7 @@ en:
   days_remaining: Days remaining for this job
   job_refused: Timeout exceeded -> job refused !
   no_timeout: No timeout set for this job
+  list_expired: here's a list of expired job(s)
+  expired: expired
+  days_ago: day(s) ago
+  change_expired: Change them to refused ? 
