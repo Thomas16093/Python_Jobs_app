@@ -12,6 +12,7 @@ en:
   count: Job Count
   filter: filter with
   timeout_exceed: Timeout has exceeded consider editing this job
+  check_timeout: Check expired job
 
   # job status
   ongoing: On going
@@ -42,7 +43,9 @@ en:
   days_remaining: Days remaining for this job
   job_refused: Timeout exceeded -> job refused !
   no_timeout: No timeout set for this job
+  expired_job: Jobs expired
   list_expired: here's a list of expired job(s)
   expired: expired
   days_ago: day(s) ago
-  change_expired: Change them to refused ? 
+  change_expired: Change them to refused ?
+  confirmation_expired: Do you really want to change every status to

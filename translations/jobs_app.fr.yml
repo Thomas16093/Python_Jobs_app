@@ -12,6 +12,7 @@ fr:
   count: Nombre de postes
   filter: Filtrer par
   timeout_exceed: Le délai est dépasser, il faut peut-être modifier le poste
+  check_timeout: Vérification des délais
 
   # job status
   ongoing: En cours
@@ -42,7 +43,9 @@ fr:
   days_remaining: Jours restant pour ce poste
   job_refused: Le délai est dépassé -> Poste refusé !
   no_timeout: Pas de délai défini pour ce poste
+  expired_job: Postes ayant un délai dépassé
   list_expired: Voici la liste de(s) poste(s) ayant un délai dépassé
   expired: a expiré il y a
   days_ago: jour(s)
   change_expired: Passé le(s) postes en refusé ?
+  confirmation_expired: Voulez-vous vraiment changé tous les status en
