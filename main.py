@@ -778,6 +778,8 @@ class WindowApp :
                     jobs_from_file.append(job)
             # refresh the listbox to dipslay the jobs read from the file
             self.refresh_all_listbox(self.jobs_list)
+            # check is some jobs are expired
+            self.check_jobs_timeout(self.jobs_list)
         else :
             # create the file and refresh the listbox
             # needed if the file picker send a non-existant file
