@@ -59,6 +59,7 @@ class WindowApp :
         fileSelector.add_command(label=i18n.t('jobs_app.new'), command=self.create_file)
         fileSelector.add_command(label=i18n.t('jobs_app.open'), command=self.select_file)
         fileSelector.add_command(label=i18n.t('jobs_app.save'), command=self.save_file)
+        fileSelector.add_command(label=i18n.t('jobs_app.check_timeout'), command=self.check_jobs_timeout)
         fileSelector.add_separator()
         fileSelector.add_command(label=i18n.t('jobs_app.exit'), command=self.exit_completly)
         
