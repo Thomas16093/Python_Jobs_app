@@ -231,6 +231,61 @@ class WindowApp :
                 return False
             return False
         return False
+    
+    def check_jobs_timeout(self, jobs = jobs_list) :
+        def change_timeout() :
+            if messagebox.askyesno(expired_jobs_window, i18n.t('jobs_app.confirmation_expired') + 
+                                                                " " + i18n.t('jobs_app.refused') + " ?") :
+                for job, index in zip(job_expired, ref_original_list) :
+                    if job["job_name"] == self.jobs_list[index]["job_name"] :
+                        self.jobs_list[index]["job_status"] = "Refused"
+                self.refresh_all_listbox(self.jobs_list)
+                expired_jobs_window.destroy()
+            else : 
+                expired_jobs_window.destroy()
+                return
+        index = 0 
+        job_expired = [] # store every job found to be expired
+        ref_original_list = [] # store the index of the job in the global list to be edited later
+        # check every job for an expiration
+        for job in jobs :
+            if job["job_status"] != "Refused" and self.CheckTimeOut(job["job_date"], self.jobs_timeout[index]) :
+                job_expired.append(job)
+                ref_original_list.append(index)
+            index += 1
+        # display new window to ask a change for them
+        expired_jobs_window = tkinter.Tk()
+        expired_jobs_window.title(i18n.t('jobs_app.expired_job'))
+        print(len(job_expired))
+        if len(job_expired) != 0 :
+            tkinter.Label(expired_jobs_window, text=i18n.t('jobs_app.list_expired') + " : ").pack()
+            # creating expiration text for every job -> used to set the list width 
+            text_job_expired = []
+            for i in range(len(job_expired)) :
+                print(job_expired[i])
+                delay = date.today() - job_expired[i]["job_date"]
+                text_job_expired.append(str(job_expired[i]["job_name"] + 
+                                            " " + i18n.t('jobs_app.expired') + 
+                                            " " + str(delay.days) + 
+                                            " " + i18n.t('jobs_app.days_ago')))
+            # looking for the longest text and using it for the width 
+            longest_text = 0
+            for text in text_job_expired :
+                if longest_text < len(text) : longest_text = len(text)
+            # display a list with all the jobs expired
+            expired_list = tkinter.Listbox(expired_jobs_window, height=len(job_expired), width=longest_text) # todo : make width adaptable
+            # for every job, calculate time elapsed and add job_name + time in the list
+            for i in range(len(job_expired)) :
+                expired_list.insert(i, text_job_expired[i])
+            expired_list.pack()
+            question_frame = tkinter.Frame(expired_jobs_window)
+            tkinter.Label(question_frame, text=i18n.t('jobs_app.change_expired')).grid(row=0, column=0)
+            # add a button to allow the user to validate the change of the jobs to refused
+            tkinter.Checkbutton(question_frame, text="yes", command=change_timeout).grid(row=0, column=1)
+            question_frame.pack()
+        else :
+            tkinter.Label(expired_jobs_window, text="No jobs are expired !").pack()
+            tkinter.Button(expired_jobs_window, text="Close", command=expired_jobs_window.destroy).pack()
 
     # binded with the listbox to get the line in the list and use it on the rest of the app
     def on_select(self, event) :
