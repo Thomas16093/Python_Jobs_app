@@ -24,6 +24,7 @@ class WindowApp :
     timeout_details_label = None
     listboxs = []
     listboxs_value = []
+    listboxs_scrollbar = None
     dropdown_menu = tkinter.OptionMenu
     enterprise_is_filtered = False
     enterprise_filter = []
@@ -108,11 +109,11 @@ class WindowApp :
         list_frame.pack(expand=True, fill="both")
 
         # create scrollbar on the right + listbox with a reference to the newly created scrollbar
-        scrollbar = tkinter.Scrollbar(list_frame)
-        scrollbar.pack(side="right", fill="y")
-        listbox_jobs = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set, exportselection=0)
-        listbox_enterprise = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set, exportselection=0)
-        listbox_status = tkinter.Listbox(list_frame, yscrollcommand=scrollbar.set, exportselection=0)
+        self.listboxs_scrollbar = tkinter.Scrollbar(list_frame)
+        self.listboxs_scrollbar.pack(side="right", fill="y")
+        listbox_jobs = tkinter.Listbox(list_frame, yscrollcommand=self.listboxs_scrollbar.set, exportselection=0)
+        listbox_enterprise = tkinter.Listbox(list_frame, yscrollcommand=self.listboxs_scrollbar.set, exportselection=0)
+        listbox_status = tkinter.Listbox(list_frame, yscrollcommand=self.listboxs_scrollbar.set, exportselection=0)
 
         # add each listbox to the array -> allow a simpler action on each one for the rest of the program
         self.listboxs.append(listbox_jobs)
@@ -198,7 +199,7 @@ class WindowApp :
         url_job_frame.pack(side=tkinter.BOTTOM, before=detail_frame, pady=5)
 
         # finish creating scrollbar
-        scrollbar.config(command=self.yview)
+        self.listboxs_scrollbar.config(command=self.yview)
 
     def exit_completly(self) :
         global return_value
@@ -511,6 +512,7 @@ class WindowApp :
     # allow the modification of the selected job ( ex : job application refused )
     def edit_job(self) :
         if self.job_index != None :
+            scrollbar = self.listboxs_scrollbar.get()
             edit_window = tkinter.Tk()
             edit_window.title(i18n.t('jobs_app.edit_job') + " : " + str(self.selected_job))
             current_job_status = tkinter.StringVar(edit_window)
@@ -533,7 +535,7 @@ class WindowApp :
                 self.jobs_list.insert(self.job_index, job)
                 # refresh with the current list and not the global one
                 # --> avoid getting back to all job with the filter value set to True
-                self.refresh_with_filter() 
+                self.refresh_with_filter(scrollbar_pos=scrollbar)
                 edit_window.destroy()
 
             def update_date() :
@@ -627,7 +629,7 @@ class WindowApp :
                     if job == "Approved" : job = i18n.t('jobs_app.approved')
                 list_box.insert(line, str(job))
     
-    def refresh_all_listbox(self, list_jobs : dict, value_creation = False) :
+    def refresh_all_listbox(self, list_jobs : dict, scrollbar_position = (0.0, 0.0), value_creation = False) :
         if len(self.listboxs) != len(self.listboxs_value) : 
             print("error : inconsistency between number of listbox and the value displayed in it !")
         for i in range(len(self.listboxs)) :
@@ -640,14 +642,16 @@ class WindowApp :
                 current_enterprise = self.jobs_list[index]["enterprise_name"]
                 if current_enterprise not in self.enterprise_filter : self.enterprise_filter.append(current_enterprise)
             self.refresh_dropdown_menu()
+        # when everything is updated, set the scrollbar to the same postion as left
+        self.yview("moveto", scrollbar_position[0])
 
-    def refresh_with_filter(self) :
+    def refresh_with_filter(self, scrollbar_pos = (0.0, 0.0)) :
         enterprise_selected = self.dropdown_variable.get()
         # check if we have selected an enterprise or we want to display all of them
         if enterprise_selected == "All" :
             self.enterprise_is_filtered = False
             self.current_job_list = self.jobs_list # get the global list when not in a filtered mode
-            self.refresh_all_listbox(self.jobs_list)
+            self.refresh_all_listbox(self.jobs_list, scrollbar_position=scrollbar_pos)
         else :
             self.enterprise_is_filtered = True
             self.current_job_list = [] # before adding jobs, set the list to nothing
