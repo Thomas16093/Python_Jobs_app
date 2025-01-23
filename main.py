@@ -637,6 +637,7 @@ class WindowApp :
         # get the new number of job for the current list 
         number_of_jobs = len(self.current_job_list)
         if self.job_count != None : self.job_count.set(str(number_of_jobs)) # test if not None to avoid a crash at program init
+        # if no filter is applied, get all the enterprises in the list of jobs
         if self.enterprise_is_filtered == False and number_of_jobs > 0:
             for index in range(number_of_jobs) :
                 current_enterprise = self.jobs_list[index]["enterprise_name"]
