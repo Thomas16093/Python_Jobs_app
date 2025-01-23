@@ -211,10 +211,14 @@ class WindowApp :
             self.listboxs[index].yview(*args)
 
     def OnMouseWheel(self, event) :
+        # create a negative delta -> we want to descend 
+        delta = -1
+        if event.delta < 0 : delta = 1 # assign the opposite if the mouse wheel move up
         for index in range(len(self.listboxs)) :
-            self.listboxs[index].yview("scroll", -event.delta, "units")
-        # this prevents default bindings from firing, which
-        # would end up scrolling the widget twice
+            self.listboxs[index].yview("scroll", int(delta * 1), "pages") # move by pages to avoid going from top to bottom
+                                                                          # on one mouse wheel notch
+        
+        # this prevents default bindings from firing, which would end up scrolling the widget twice
         return "break"
     
     def OpenUrl(self, event) :
