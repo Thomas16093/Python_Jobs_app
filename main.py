@@ -758,7 +758,7 @@ class WindowApp :
             # reset the filter when loading a new file
             self.dropdown_variable.set("All")
             # reset all listbox before displaying the new one
-            self.refresh_all_listbox(jobs_from_file, True) 
+            self.refresh_all_listbox(jobs_from_file, value_creation=True) 
             with open(path_to_file) as file:
                 reader = csv.reader(file, delimiter=";")
                 for values in reader:
@@ -793,7 +793,7 @@ class WindowApp :
             # create the file and refresh the listbox
             # needed if the file picker send a non-existant file
             self.file = open(self.filename, "w")
-            self.refresh_all_listbox([], True)
+            self.refresh_all_listbox([], value_creation=True)
 
 
 if __name__ == "__main__":
