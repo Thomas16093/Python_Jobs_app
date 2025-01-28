@@ -286,7 +286,7 @@ class WindowApp :
             question_frame = tkinter.Frame(expired_jobs_window)
             tkinter.Label(question_frame, text=i18n.t('jobs_app.change_expired')).grid(row=0, column=0)
             # add a button to allow the user to validate the change of the jobs to refused
-            tkinter.Checkbutton(question_frame, text="yes", command=change_timeout).grid(row=0, column=1)
+            tkinter.Checkbutton(question_frame, text=i18n.t('jobs_app.submit'), command=change_timeout).grid(row=0, column=1)
             question_frame.pack()
         else :
             if loading_jobs == False :
